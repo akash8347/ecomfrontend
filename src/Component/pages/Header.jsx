@@ -30,8 +30,9 @@ const Header = () => {
     setshowDuplidown(!showDuplidown);
     console.log(showDuplidown)
   };
-
-
+  // let url= process.env.REACT_APP_BACKENDURL;
+  // `${url}
+  let test= process.env.TEST
   const togglebutton=()=>{
 
     
@@ -48,7 +49,7 @@ const Header = () => {
       <div></div>
       <ul className='nav'>
         <div className="logo">
-          <i>GOHIL'SSSS</i>
+          <i>{test}</i>
           <i className='hamburger' onClick={togglebutton} > &#9776;</i>
         </div>
        <div className="flex-cont">
