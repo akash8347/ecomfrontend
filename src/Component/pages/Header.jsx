@@ -49,7 +49,7 @@ const Header = () => {
       <div></div>
       <ul className='nav'>
         <div className="logo">
-          <i>{test} aave to haru</i>
+          <i>GOHIL'S</i>
           <i className='hamburger' onClick={togglebutton} > &#9776;</i>
         </div>
        <div className="flex-cont">
