@@ -13,11 +13,12 @@ const AdminOrders = () => {
   const detailOrder = (id) => {
     navigate(`/orderdetail/${id}`)
   }
+  let url= process.env.REACT_APP_BACKENDURL
   useEffect(() => {
 
     const func = async () => {
       const { token } = admin
-      let url= process.env.REACT_APP_BACKENDURL
+      // let url= process.env.REACT_APP_BACKENDURL
             // `${url}
       const res = await fetch(`${url}/admin/allorders`, {
         method: 'GET',
@@ -43,7 +44,7 @@ const AdminOrders = () => {
   // -------------------------------PROCESS order----------------------
   const processOrder = async (orderId) => {
     const { token } = admin
-    const res = await fetch(`http://localhost:8000/admin/processorder/${orderId}`, {
+    const res = await fetch(`${url}/admin/processorder/${orderId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ const AdminOrders = () => {
     console.log('deleteOrder called' )
     console.log(orderId)
     const { token } = admin
-    const res = await fetch(`http://localhost:8000/admin/deleteorder/${orderId}`, {
+    const res = await fetch(`${url}/admin/deleteorder/${orderId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

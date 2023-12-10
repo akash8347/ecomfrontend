@@ -53,14 +53,18 @@ const AdminContact = () => {
              </tr>
            </thead>
            <tbody>
-             {contacts.map(contact => (
+             {
+             contacts.map(contact => {
+              const formattedDate = moment(contact.createdAt).format('D-M-YYYY');
+                  const createdAt = moment(contact.createdAt).fromNow();
                <tr key={contact._id}>
                  <td>{contact.name}</td>
                  <td>{contact.email}</td>
                  <td>{contact.message}</td>
-                 <td>{new Date(contact.createdAt).toLocaleString()}</td>
+                 <td>{createdAt + ' ' + formattedDate}</td>
                </tr>
-             ))}
+               })
+             }
            </tbody>
          </table>
    
