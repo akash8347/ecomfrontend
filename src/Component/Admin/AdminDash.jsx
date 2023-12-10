@@ -43,7 +43,7 @@ const deletehandle = async (id) => {
      
       try {
         const {token}=admin
-        const res = await fetch('http://localhost:8000/admin/allusers', {
+        const res = await fetch(`${url}/admin/allusers`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
