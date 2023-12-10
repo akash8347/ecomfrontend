@@ -27,8 +27,8 @@ const AddUser = () => {
       password
     }
     const { token } = admin;
-
-    const resjson = await fetch('http://localhost:8000/admin/adadmin',{
+   let url= process.env.REACT_APP_BACKENDURL
+    const resjson = await fetch({url}+'admin/adadmin',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

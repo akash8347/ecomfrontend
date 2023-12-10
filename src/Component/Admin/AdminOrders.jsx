@@ -17,7 +17,9 @@ const AdminOrders = () => {
 
     const func = async () => {
       const { token } = admin
-      const res = await fetch('http://localhost:8000/admin/allorders', {
+      let url= process.env.REACT_APP_BACKENDURL
+            // `${url}
+      const res = await fetch(`${url}admin/allorders`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

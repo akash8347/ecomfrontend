@@ -10,7 +10,9 @@ const AdminContact = () => {
 
         const func = async () => {
           const {token}=admin
-          const res = await fetch('http://localhost:8000/admin/allcontact', {
+          let url= process.env.REACT_APP_BACKENDURL
+          
+          const res = await fetch(`${url}admin/allcontact`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

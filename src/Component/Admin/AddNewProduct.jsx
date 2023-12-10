@@ -754,8 +754,10 @@ const AddNewProduct = () => {
     console.log(formDataToSend);
     const { token } = admin;
     try {
+      let url= process.env.REACT_APP_BACKENDURL
+      
       const response = await axios.post(
-        'http://localhost:8000/productapi/createproduct',
+        `${url}productapi/createproduct`,
         formDataToSend,
         {
           headers: {

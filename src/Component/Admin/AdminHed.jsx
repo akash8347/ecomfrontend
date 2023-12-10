@@ -63,7 +63,7 @@ return (
     {/* <ul className={admin?('nav'):('nav-txt-center')}  > */}
     <ul className="nav-txt-center">
       <div className="logo">
-        <i>GOHIL'S</i>
+        <i>{process.env.TEST}</i>
         <i className='hamburger' onClick={togglebutton} > &#9776;</i>
       </div>
      <div className="flex-cont">

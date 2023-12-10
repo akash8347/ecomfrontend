@@ -30,7 +30,9 @@ const Adminlog = () => {
           
         else{
             setError(null)
-            const responce = await fetch('http://localhost:8000/admin/login', {
+            let url= process.env.REACT_APP_BACKENDURL
+            // `${url}
+            const responce = await fetch(`${url}admin/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
