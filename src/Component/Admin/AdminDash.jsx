@@ -11,9 +11,10 @@ const AdminDash = () => {
   const { admin } = useContext(AuthContext)
   const { dispatch, allusers, totalUsers, totalIncome } = useContext(adminContext)
 const [error,setError]=useState()
+let url= process.env.REACT_APP_BACKENDURL
 const deletehandle = async (id) => {
   const {token}=admin;
-  let url= process.env.REACT_APP_BACKENDURL
+ 
   // `${url}
   const res = await fetch(`${url}/admin/userdelete/${id}`, {
     method: 'DELETE',
