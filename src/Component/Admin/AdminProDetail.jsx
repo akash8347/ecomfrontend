@@ -11,7 +11,7 @@ const AdminProDetail = () => {
   const [filteredProduct, setFilteredProduct] = useState([]);
 
   const [selectedColorImageIndex, setSelectedColorImageIndex] = useState(0);
-
+  let url= process.env.REACT_APP_BACKENDURL
   useEffect(() => {
     if (!loading && filteredProduct.length > 0) {
       setSelectedColorImageIndex(0);
@@ -37,7 +37,7 @@ const AdminProDetail = () => {
     const fetchData = async () => {
       const {token}=admin
       try {
-        let url= process.env.REACT_APP_BACKENDURL
+        
         // `${url}
         const response = await fetch(`${url}/productapi/fetchproducts/${id}`,
         {

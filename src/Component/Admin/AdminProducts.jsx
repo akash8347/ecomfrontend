@@ -14,7 +14,7 @@ const AdminProducts = () => {
   const { dispatch, allProducts } = useContext(adminContext)
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-
+  let url= process.env.REACT_APP_BACKENDURL
   const handleUpdateClick = (id) => {
     const jotutue = allProducts.find(product => product.id === id)
     console.log(jotutue)
@@ -29,7 +29,7 @@ const AdminProducts = () => {
     const func = async () => {
       if (admin && admin.token) { // Add a null check for admin and admin.token
         const { token } = admin;
-        let url= process.env.REACT_APP_BACKENDURL
+       
         // `${url}
         const res = await fetch(`${url}/admin/adminproducts`, {
           method: 'GET',

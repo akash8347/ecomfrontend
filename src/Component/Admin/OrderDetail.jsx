@@ -13,13 +13,13 @@ const OrderDetail = () => {
 let admin=JSON.parse(localStorage.getItem('adminJWT'))
 let {token}=admin
   const [order, setOrder] = useState(null);
-
+  let url= process.env.REACT_APP_BACKENDURLs
   useEffect(() => {
     const fetchData = async () => {
       
       try {
         // const {token}=admin;
-        let url= process.env.REACT_APP_BACKENDURL
+        
         // `${url}
         const response = await fetch(`${url}/admin/singleorder/${id}`, {
           method: 'GET',
@@ -96,8 +96,8 @@ let {token}=admin
         
         order.items.map((item, index) => (
           <div key={index} className="item">
-             let url= process.env.REACT_APP_BACKENDURL
-        // `${url}
+             {/* let url= process.env.REACT_APP_BACKENDURL */}
+        {/* // `${url} */}
             <img src={`${url}/image/${item.product.image_filenames[0]}`} alt={item.product.name} />
             <div className="item-details">
               <p>{item.product.name}</p>

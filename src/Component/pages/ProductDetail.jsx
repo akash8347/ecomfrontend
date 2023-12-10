@@ -141,7 +141,7 @@ const ProductDetail = () => {
   const [filteredProduct, setFilteredProduct] = useState([]);
 
   const [selectedColorImageIndex, setSelectedColorImageIndex] = useState(0);
-
+  let url= process.env.REACT_APP_BACKENDURL
   useEffect(() => {
     if (!loading && filteredProduct.length > 0) {
       setSelectedColorImageIndex(0);
@@ -166,7 +166,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let url= process.env.REACT_APP_BACKENDURL
+       
       // `${url}
         const response = await fetch( `${url}/productapi/fetchproducts/${id1}`);
         const data = await response.json();
