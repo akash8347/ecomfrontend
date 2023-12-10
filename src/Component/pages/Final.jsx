@@ -31,7 +31,7 @@ const Final = () => {
     try {
 
       if (user === null) {
-        setError('You must be logged in')
+       console.log('You must be logged in')
         toast('You must be logged in')
         // throw Error('must logged in')
       }
