@@ -54,7 +54,7 @@ const Final = () => {
 
       const resData = await res.json();
       if (!res.ok) {
-        setError(resData.msg)
+        setError(resData)
       } else {
         // document.getElementById('span').innerHTML="<h3>order placed successfully </h3>"
         document.getElementById('final_button').disabled = true;
