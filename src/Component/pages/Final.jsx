@@ -55,6 +55,7 @@ const Final = () => {
       const resData = await res.json();
       if (!res.ok) {
         setError(resData)
+        console.log(resData)
       } else {
         // document.getElementById('span').innerHTML="<h3>order placed successfully </h3>"
         document.getElementById('final_button').disabled = true;
@@ -118,7 +119,7 @@ const Final = () => {
           </table>
         </div>
         <button id='final_button' onClick={placeOrder} className='comman_button'>Place order</button>
-        {error && <div id='span'>{error}</div>}
+        {/* {error && <div id='span'>{error}</div>} */}
         <div className='final_links'>
           <Link className='links' to='/store'>Explore more Products</Link>
           <Link className='links' to='/orderstatus'>Check status</Link>
