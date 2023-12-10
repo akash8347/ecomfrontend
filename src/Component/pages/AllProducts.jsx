@@ -188,7 +188,7 @@ const AllProducts = () => {
       try {
         let url= process.env.REACT_APP_BACKENDURL
             // `${url}
-        const response = await fetch(`${url}fetchproducts?currentPage=${currentPage}&searchQuery=${searchQuery}`);
+        const response = await fetch(`${url}productapi/fetchproducts?currentPage=${currentPage}&searchQuery=${searchQuery}`);
         const data = await response.json();
         const { products, totalPages } = data;
         setFilteredProData(products);
