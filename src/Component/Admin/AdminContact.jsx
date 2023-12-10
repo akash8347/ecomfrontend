@@ -12,7 +12,7 @@ const AdminContact = () => {
           const {token}=admin
           let url= process.env.REACT_APP_BACKENDURL
           
-          const res = await fetch(`${url}admin/allcontact`, {
+          const res = await fetch(`${url}/admin/allcontact`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

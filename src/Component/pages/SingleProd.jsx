@@ -13,7 +13,9 @@ const SingleProd = ({ item }) => {
 
   const getImageUrl = (imageName) => {
     // Assuming your server is running on http://localhost:8000
-    return `http://localhost:8000${imageName}`;
+    let url= process.env.REACT_APP_BACKENDURL
+    // `${url}
+    return `${url}${imageName}`;
   };
   // const parts = item.image_urls[0].split("/uploads");
   // const textAfterUploads = parts[1];

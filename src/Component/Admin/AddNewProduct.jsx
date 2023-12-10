@@ -757,7 +757,7 @@ const AddNewProduct = () => {
       let url= process.env.REACT_APP_BACKENDURL
       
       const response = await axios.post(
-        `${url}productapi/createproduct`,
+        `${url}/productapi/createproduct`,
         formDataToSend,
         {
           headers: {

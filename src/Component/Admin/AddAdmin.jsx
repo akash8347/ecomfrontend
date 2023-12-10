@@ -28,7 +28,7 @@ const AddUser = () => {
     }
     const { token } = admin;
    let url= process.env.REACT_APP_BACKENDURL
-    const resjson = await fetch({url}+'admin/adadmin',{
+    const resjson = await fetch({url}+'/admin/adadmin',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
