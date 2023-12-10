@@ -32,7 +32,7 @@ const Header = () => {
   };
   // let url= process.env.REACT_APP_BACKENDURL;
   // `${url}
-  let test= process.env.TEST
+  let test= process.env.REACT_APP_TEST
   const togglebutton=()=>{
 
     
@@ -49,7 +49,7 @@ const Header = () => {
       <div></div>
       <ul className='nav'>
         <div className="logo">
-          <i>{test}</i>
+          <i>{test} aave to haru</i>
           <i className='hamburger' onClick={togglebutton} > &#9776;</i>
         </div>
        <div className="flex-cont">
