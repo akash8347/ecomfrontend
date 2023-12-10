@@ -55,7 +55,7 @@ const AdminProDetail = () => {
       }
     };
     fetchData();
-  }, [id,admin]);
+  }, [id,admin,url]);
 
   return (
     <>

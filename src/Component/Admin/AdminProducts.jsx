@@ -53,7 +53,7 @@ const AdminProducts = () => {
     };
 
     func();
-  }, [dispatch, admin]);
+  }, [dispatch, admin,url]);
 
   const deleteOrder = async (productId) => {
     const {token}=admin

@@ -38,7 +38,7 @@ let {token}=admin
       }
     };
     fetchData();
-  }, [id,token]);
+  }, [id,token,url]);
 
   // const handlePrint = () => {
   //   window.print();

@@ -178,7 +178,7 @@ const ProductDetail = () => {
       }
     };
     fetchData();
-  }, [id1]);
+  }, [id1,url]);
 
   return (
     <>
