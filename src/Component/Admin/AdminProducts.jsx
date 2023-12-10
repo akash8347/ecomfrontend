@@ -29,7 +29,9 @@ const AdminProducts = () => {
     const func = async () => {
       if (admin && admin.token) { // Add a null check for admin and admin.token
         const { token } = admin;
-        const res = await fetch('http://localhost:8000/admin/adminproducts', {
+        let url= process.env.REACT_APP_BACKENDURL
+        // `${url}
+        const res = await fetch(`${url}/admin/adminproducts`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +57,8 @@ const AdminProducts = () => {
 
   const deleteOrder = async (productId) => {
     const {token}=admin
-    const res = await fetch(`http://localhost:8000/admin/deleteproduct/${productId}`, {
+   
+    const res = await fetch( `${url}/admin/deleteproduct/${productId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -85,7 +88,8 @@ const AdminProducts = () => {
                   <div className="admin-product-card" key={product.id}>
                     {/* You can customize the card layout based on your requirements */}
                    { console.log(product.image_urls[0])}
-                    <img src={`http://localhost:8000${product.image_urls[0]}`} alt={product.name} />
+                
+                    <img src={`${url}${product.image_urls[0]}`} alt={product.name} />
                     <div className="product-details">
                       <h3>{product.name}</h3>
                       <p>{product.company}</p>

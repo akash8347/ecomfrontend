@@ -166,7 +166,9 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/productapi/fetchproducts/${id1}`);
+        let url= process.env.REACT_APP_BACKENDURL
+      // `${url}
+        const response = await fetch( `${url}/productapi/fetchproducts/${id1}`);
         const data = await response.json();
         console.log(data);
         setFilteredProduct(data);
@@ -191,7 +193,8 @@ const ProductDetail = () => {
           <div className='product-detail_container' key={product.id}>
             <div className="flex01">
               <div className="image-container">
-                <img className="product-image" alt={product.name} src={`http://localhost:8000${product.image_urls[selectedColorImageIndex]}`} />
+             
+                <img className="product-image" alt={product.name} src={`${url}${product.image_urls[selectedColorImageIndex]}`} />
                 <button onClick={handlePrevImageClick}>{'<'}</button>
                 <button onClick={handleNextImageClick}>{'>'}</button>
               </div>

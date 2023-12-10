@@ -16,7 +16,9 @@ const SignUp = () => {
 
             e.preventDefault();
             document.getElementById('form').reset()
-            const responce = await fetch('http://localhost:8000/api/signup', {
+            let url= process.env.REACT_APP_BACKENDURL
+            // `${url}
+            const responce = await fetch(`${url}/api/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

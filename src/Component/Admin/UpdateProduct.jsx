@@ -544,10 +544,12 @@ const UpdateProduct = () => {
     formData.colorImages.forEach((image) => {
       formDataToSend.append('colorImages', image.file);
     });
+    let url= process.env.REACT_APP_BACKENDURL
+        // `${url}
 
     try {
       const response = await axios.put(
-        `http://localhost:8000/productapi/updateproduct/${productId}`,
+        `${url}/productapi/updateproduct/${productId}`,
         formDataToSend,
         {
           headers: {

@@ -20,7 +20,9 @@ const OrderStatus = () => {
         }
 
         const { token } = user;
-        const userOrders = await fetch('http://localhost:8000/order/orderstatus', {
+        let url= process.env.REACT_APP_BACKENDURL
+      // `${url}
+        const userOrders = await fetch(`${url}/order/orderstatus`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

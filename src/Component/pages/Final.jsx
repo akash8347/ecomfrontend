@@ -40,7 +40,9 @@ const Final = () => {
 
       // console.log(token)
       localStorage.removeItem('cart')
-      const res = await fetch('http://localhost:8000/order/createorder', {
+      let url= process.env.REACT_APP_BACKENDURL
+      // `${url}
+      const res = await fetch(`${url}/order/createorder`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

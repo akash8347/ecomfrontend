@@ -30,7 +30,9 @@ const Contact = () => {
 
     // Send form data to backend
     const data = { name, email, message };
-    const resjson = await fetch('http://localhost:8000/api/contact', {
+    let url= process.env.REACT_APP_BACKENDURL
+        // `${url}
+    const resjson = await fetch(`${url}/api/contact`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -19,7 +19,9 @@ let {token}=admin
       
       try {
         // const {token}=admin;
-        const response = await fetch(`http://localhost:8000/admin/singleorder/${id}`, {
+        let url= process.env.REACT_APP_BACKENDURL
+        // `${url}
+        const response = await fetch(`${url}/admin/singleorder/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -94,7 +96,9 @@ let {token}=admin
         
         order.items.map((item, index) => (
           <div key={index} className="item">
-            <img src={`http://localhost:8000/image/${item.product.image_filenames[0]}`} alt={item.product.name} />
+             let url= process.env.REACT_APP_BACKENDURL
+        // `${url}
+            <img src={`${url}/image/${item.product.image_filenames[0]}`} alt={item.product.name} />
             <div className="item-details">
               <p>{item.product.name}</p>
               {console.log(item.product.image_filenames[0])}
