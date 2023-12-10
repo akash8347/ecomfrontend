@@ -1,0 +1,50 @@
+/* Add your styles for the admin product list */
+.admin-product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .admin-product-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    max-width: 250px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  
+    img {
+      max-width: 100%;
+      height: auto;
+      max-height: 150px; /* Set a maximum height for the image */
+      object-fit: cover; /* Maintain aspect ratio and cover the container */
+      border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+    }
+  
+    .product-details {
+      padding: 10px;
+  
+      h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+  
+      p {
+        margin: 5px 0;
+        font-size: 14px;
+      }
+  
+      .button-container {
+        display: flex;
+        gap: 10px;
+  
+        button {
+          padding: 5px 10px;
+        }
+      }
+    }
+  
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+  

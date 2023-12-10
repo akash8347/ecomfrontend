@@ -1,0 +1,1427 @@
+
+*{
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+/*------------------------------ SingleProd.jsx--------------------------------------- */
+.product-card {
+  width: 250px;
+  padding: 20px;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.product-card__image {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.product-card__title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.product-card__price {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.product-card__button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.product-card__button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.Link2 {
+  text-decoration: none;
+  color: #333;
+}
+
+    
+/*------------------------------ SingleProd.jsx UP--------------------------------------- */
+.product-card{
+  margin: 10px;
+}
+/* -----------------------AdminHed.jsx DOWN-------------------------- */
+
+.adminlogout{
+  background-color: #075d93;
+  color: white;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  /* margin-left: 18px; */
+  /* width: 100%; */
+}
+.adminLink{
+  padding: 0 19px;
+  text-decoration: none;
+  color: black;
+  
+}
+.admin-nav{
+  height: 40px;
+  display: flex;
+  background-color: lightseagreen;
+  align-items: center;
+  justify-content: space-between;
+  width:80%;
+  margin: auto;
+  padding: 7px 20px;
+}
+
+.flex00{
+  list-style: none;
+  padding: 0 10px;
+  font-size: 24px;
+}
+
+ .flex10 > li{
+  list-style: none;
+  padding: 0 10px;
+  font-size: 24px;
+}
+ .flex20 > li{
+  list-style: none;
+  padding: 0 10px;
+  font-size: 24px;
+}
+.hamburger1 {
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px 15px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1;
+  transition: background-color 0.3s ease;
+  display: none;
+}
+@media only screen and (max-width: 1490px){
+  .hamburger1{
+    display: block;
+  }
+  .adminlogout{
+    text-align: center;
+  }
+}
+
+/* -----------------------AdminHed.jsx UP-------------------------- */
+
+  /* ------------------Header.jsx DOWN------------------------------ */
+  .nav{
+    display: flex;
+    /* background-color: lightseagreen; */
+    align-items: center;
+    justify-content: space-between;
+    width:80%;
+    margin: auto;
+    padding: 7px 20px;
+    /* background-color: #f2f2f2; */
+    background-color: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .lit{
+    list-style: none;
+    padding: 0 10px;
+    font-size: 24px;
+  }
+  .li1{
+    list-style: none;
+    padding: 0 10px;
+    font-size: 24px;
+  }
+
+  .Link{
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+    transition: all 0.2s ease;
+  }
+
+.flex2{
+  display: flex;
+}
+.flex-cont{
+  display: flex;
+}
+.dropbtn{
+  padding: 5px;
+  font-size: 18px;
+  border:1px solid darkblue;
+  background-color: lightskyblue;
+  border-radius: 2px;
+  margin: 0 10px;
+}
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-left: 5px;
+  margin-bottom: 3px;
+  
+}
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.dropdown {
+  position: relative;
+
+}
+.dropdown-content {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #f1f1f1;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+
+}
+.linkdrop{
+  text-decoration: none;
+  color: #333;
+ text-align: center;
+ font-size: 18px;
+ padding: 3px 0;
+}
+.hamburger {
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px 15px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 1;
+  transition: background-color 0.3s ease;
+  display: none;
+}
+.flex1{
+  margin-right: 450px;
+  display: flex;
+}
+.flex1ad{
+  margin-right: 300px;
+  display: flex;
+}
+
+@media only screen and (max-width: 1490px){
+  .flex1{
+    margin-right: 160px;
+    display: flex;
+  } 
+  .flex1ad{
+    margin-right: 200px;
+    display: flex;
+  }
+}
+@media only screen and (max-width: 1225px){
+  .flex1{
+    margin-right: 150px;
+    display: flex;
+
+  } 
+  .flex1ad{
+    margin-right: 100px;
+    display: flex;
+  }
+}
+@media only screen and (max-width: 1123px) {
+  .flex-cont{
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    display: block;
+    /* width: 80%; */
+margin: auto;
+  }
+  .logo{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  /* margin-bottom:10px; */
+  
+  }
+  .hamburger{
+    display: block;
+  }
+  .nav{
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+  }
+  .flex1{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: auto;
+    font-size: 16px;
+  
+    /* display: none; */
+  }
+  .flex1ad{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: auto;
+    font-size: 16px;
+   
+  }
+  .flex2{
+  
+    font-size: 16px;
+      width: 100%;
+    text-align: center;
+    margin: 10px 10px  0 40px;
+       }
+
+     .lit{
+        /* border: 1px solid black; */
+        margin: 5px 0;
+        text-align: center;
+      } 
+  
+ 
+   .nav{
+ 
+    width: 100%;
+    /* height: 3rem; */
+  } 
+  /* .flex1{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+   
+   
+       }  */
+     
+  
+   
+
+}
+
+/* ------------- Header.jsx UP -------------------------------------- */
+
+/* -------------home image Home.jsx DOWN -------------------------------------- */
+/* set the background image for the home page */
+#home {
+  background-image: url('../imagepub/akgv2.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  top: 60px; /* adjust as needed based on the height of your navbar */
+  height: 400px;
+  /* Add a semi-transparent background color to make text more visible */
+  background-color: rgba(255, 255, 255, 0.7);
+  /* Add padding and text alignment */
+  padding: 20px;
+  /* text-align: center; */
+  /* opacity: 0.7; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 100px;
+  
+}
+/* .section2{
+  width: 100%;
+  height: 400px;
+ 
+} */
+#my-section {
+  width: 90%;
+  margin: 60px  auto 60px auto;
+  padding: 50px 0 50px 50px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+#my-section h2 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.responsive {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.res-kid {
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+}
+
+.res-kid h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.res-kid div {
+  font-size: 3em;
+  font-weight: bold;
+  color: #007bff;
+  animation-name: counter;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes counter {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+
+
+
+#home p {
+  /* Add some styling to the description text */
+  font-size: 1.2em;
+  color:white;
+  line-height: 1.5;
+  background-color: rgb(88, 172, 255);
+  text-align: center;
+  z-index: 1;
+  
+}
+#home .home-heading{
+  font-size: 3em;
+  font-weight: bold;
+  /*  */
+  margin-bottom: 10px;
+
+  color: rgb(255, 247, 247);
+  background-color: rgb(88, 172, 255);
+  display: inline-block;
+}
+@media only screen and (max-width: 1000px){
+ #home .home-heading{
+    font-size: 2rem;
+  }
+  #home p {
+    /* Add some styling to the description text */
+    font-size: 0.9em;
+    color:white;
+    line-height: 1;
+    
+    text-align: center;
+    z-index: 1;
+    
+  }
+ .responsive{
+    display: flex;
+    flex-direction: column;
+  }
+  .res-kid{
+    margin: 15px 0;
+
+  }
+}
+
+/* ------------- Home.jsx UP -------------------------------------- */
+
+/* ------------------------Login.jsx AND SignUp.jsx DOWN-------------------------- */
+
+#loginform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid black;
+  width: 80%;
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#loginform input[type="email"],
+#loginform input[type="password"] {
+  text-align: center;
+  margin: 10px 0px;
+  padding: 10px 10px;
+  font-size: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#loginform button {
+  margin: 10px 0px;
+  padding: 10px 20px;
+  font-size: 20px;
+}
+
+#loginform div {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 16px;
+}
+
+#loginform span {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 16px;
+}
+
+#form{
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  width: 80vh;
+  margin: 30px auto;
+}
+/* ------------------------Login.jsx SignUp.jsx UP-------------------------- */
+
+/* ------------------------Shipping.jsx DOWN-------------------------- */
+
+
+.shipping-container{
+  width: 80%;
+  margin: 0  auto;
+  padding: 2rem;
+}
+.shipping-form{
+  display: flex;
+  flex-direction: column;
+}
+.shipping-form > input{
+  margin: 0.5rem;
+  padding: 4px;
+  font-size: 22px;
+}
+.shipping-form > label{
+  margin: 10px 0 5px 0;
+  font-size: 22px;
+}
+
+.shipping-form > textarea{
+  margin: 0.5rem;
+  padding: 4px;
+  font-size: 22px;
+}
+.shipping-form > button{
+  margin: 10px 8px;
+  padding: 10px 0;
+  background-color: #075d93;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/* ------------------------Shipping.jsx UP-------------------------- */
+
+/* ---------------------Final.jsx DOWN------------------- */
+.comman-h1{
+  text-align: center;
+   margin: 30px 10px;
+}
+
+table {
+  font-family: Arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  max-height: 100px;
+  overflow-y: scroll;
+}
+
+table th {
+  background-color: #ddd;
+  border: 1px solid #bbb;
+  padding: 8px;
+  text-align: left;
+  color: black;
+}
+
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+
+
+.table2{
+  display: flex;
+  justify-content: center;
+}
+.table2 table{
+  width: 60%;
+  margin: 3rem auto;
+  
+}
+.comman_button{
+  background-color: #075d93;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+
+}
+.final_links{
+  display: flex;
+  justify-content: space-around;
+  margin-top:30px;
+}
+/* ---------------------Final.jsx UP------------------- */
+/* ---------------------OrderStatus.jsx DOWN------------------- */
+
+
+.orderStatus_container{
+  width: 80%;
+padding: 020px;
+margin: 0 auto;
+ /* overflow-x: scroll;  */
+/* height: 700px; */
+/* height: 200px; */
+}
+/* @media only screen and(max-width:1000px){
+  .orders-status-table {
+   
+    overflow-x: scroll;
+   
+  }
+} */
+
+.orderStatus_container{
+  /* width: 80%;
+padding: 020px;
+margin: 0 auto; */
+ /* overflow-x: scroll;  */
+/* height: 700px; */
+/* height: 200px; */
+width: 80%;
+/* padding: 020px; */
+margin: 10px auto 10px auto;
+}
+.orders-status-table{
+  width: 100%;
+  
+  margin: 0 auto;
+  overflow-x: scroll;
+}
+.admindash-container{
+  width: 80%;
+  margin: 10px auto 10px auto;
+}
+.adminorder-table{
+  width: 100%;
+  margin: 30px auto 10px auto;
+  overflow-x: scroll;
+}
+.adminproducttable{
+  width: 100%;
+  margin: 30px auto 10px auto;
+  overflow-x: scroll;
+}
+.admindash-containertable{
+  width: 100%; 
+  margin: 0 auto;
+  overflow-x: scroll;
+}
+
+
+
+/* ---------------------OrderStatus.jsx UP------------------- */
+
+.test{
+  color: #4CAF50;
+}
+
+/* Footer.jsx DOWN------------------------------ */
+.footer {
+  background-color: #f2f2f2;
+  color: #333;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+  position: absolute; 
+   bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  height: 50px;
+}
+.footer1 {
+  background-color: #f2f2f2;
+  color: #333;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+  /* position: absolute; 
+   bottom: 0; */
+  width: 80%;
+  margin: auto;
+  display: flex;
+  justify-content: space-around;
+  height: 50px;
+}
+.footersmall {
+  background-color: #f2f2f2;
+  color: #333;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+  position: absolute; 
+   bottom: 0;
+  width: 80%;
+  margin:  auto;
+  display: flex;
+  justify-content: space-around;
+  height: 50px;
+}
+/* .footer1 {
+  background-color: #f2f2f2;
+  color: #333;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+  position: absolute; 
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  height: 50px;
+} */
+
+/* Footer.jsx UP------------------------------ */
+
+/* ------------------------ AdminDash.jsx DOWN ---------------- */
+.final-container{
+  width: 80%;
+  padding: 020px;
+  margin: 0 auto;
+}
+.earning-table{
+  margin-bottom: 29px;
+}
+.admin-h1{
+  text-align: center;
+   margin: 15px 10px;
+}
+/* ------------------------AdminDash.jsx UP------------------------------------- */
+
+/* -------------------AddNewProduct.jsx DOWN ------------------------- */
+
+.addnewproduct-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.addProduct-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.addProduct-form > label {
+  margin: 10px 0 5px 0;
+  font-size: 22px;
+}
+
+.addProduct-form > .input1,
+.addProduct-form > .textarea1 {
+  margin: 0.5rem 0;
+  padding: 4px;
+  font-size: 22px;
+  border: 1px solid black;
+  width: 100%;
+}
+
+.txtlabel {
+  display: flex;
+  flex-direction: column;
+}
+
+.textarea1 {
+  height: 150px;
+}
+
+.btnupdate{
+  margin: 10px 0;
+  padding: 10px 0;
+  height: 50px;
+}
+
+@media screen and (min-width: 1200px) {
+  .addProduct-form {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .addProduct-form > label {
+    width: 30%;
+  }
+
+  .addProduct-form > .input1,
+  .addProduct-form > .textarea1 {
+    width: 65%;
+  }
+}
+
+
+.product-detail_container{
+  display: flex;
+  width: 80%;
+  margin: 30px auto;
+  padding: 2rem;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  justify-content: space-around;
+  /* background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+}
+.flex01{
+  padding: 20px;
+  border: 1px solid black;
+}
+.flex02{
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+}
+.flex02 >p{
+ margin: 10px 0;
+}
+
+.flex02 >p>span{
+  font-weight: 600;
+}
+.product-card__button1 {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 20px 0;
+}
+.links{
+  display: flex;
+  justify-content: space-around;
+}
+.Link1{
+  /* text-decoration: none; */
+  color: black;
+  }
+/* -------------------ProductDetail.jsx UP ------------------------- */
+
+
+/* -----------------------------cart button set------------------ */
+
+/* Cart.jsx DOWN------------------------------------------------ */
+.cart-bap{
+  position:relative;
+  height: 380px;
+  border: 1px solid black;
+  /* width: 80%;
+  margin: auto; */
+  margin-top: 20px;
+  overflow-y: scroll;
+  padding-top: 20px;
+}
+.cart-bap-bap{
+   width: 80%;
+  margin: auto; 
+}
+.cart-total{
+  margin-left: 65vw;
+  /* border: 1px solid black; */
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.cart-total .span1{
+  font-weight: 600;
+  font-size: 20px;
+}
+.btn-con{
+  width: 100%;
+/* border: 1px solid black; */
+  
+}
+.comman_button1{
+  background-color: #075d93;
+  color: white;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+display: block;
+text-align: center;
+}
+@media only screen and (max-width: 1000px){
+  .cart-total{
+    margin-left: 47vw;
+    width: 200px;
+  }
+  .cart-total .span1{
+    font-weight: 600;
+    font-size: 15px;
+  }
+  
+  
+  
+}
+/* Cart.jsx UP------------------------------------------------ */
+
+/* ---------------------------------SingleCart.jsx DOWN------------------------ */
+.card-detail{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.card-detail > div:first-child{
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.card-detail > div:last-child{
+  font-size: 14px;
+  color: #555;
+}
+
+.card-quant{
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.card-quant > .button{
+  margin: 0 10px;
+  padding: 5px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.card-quant > .button:hover{
+  background-color: #0062cc;
+}
+
+.card-quant > .button:active{
+  background-color: #005cbf;
+}
+
+.card-quant > .button.disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card-quant > .button.disabled:hover{
+  background-color: #007bff;
+}
+
+.card-quant > .x{
+  font-size: 24px;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.card-quant > .x:hover{
+  background-color: #c82333;
+}
+
+.card-quant > .x:active{
+  background-color: #bd2130;
+}
+
+.card-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  height: 80px;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.card-container.deleted{
+  transform: scale(0);
+  opacity: 0;
+}
+
+.card-container:not(.deleted) + .card-container{
+  margin-top: 20px;
+}
+/* ---------------------------------SingleCart.jsx UP------------------------ */
+
+/* ---------------------AllProducts.jsx DOWN--------------- */
+.product-container{
+  width: 80%;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  /* border: 1px solid black; */
+  padding: 30px;
+
+}
+.filters{
+  border: 1px solid black;
+  /* display: block; */
+  margin-top: 30px;
+  padding: 5px;
+ height: 360px;
+}
+.filters h3{
+  color: #bd2130;
+  margin-bottom: 10px;
+}
+.search-bar{
+  display: flex;
+  flex-direction: column;
+}
+.inputfilter{
+  margin: 10px 0;
+}
+
+.store-container{
+  display: flex;
+  width: 80%;
+  margin: auto;
+  flex-wrap: wrap;
+}
+.prs{
+  margin: 5px 0;
+}
+@media only screen and (max-width: 1000px) {
+  .store-container{
+    display: flex;
+    width: 100%;
+    margin: auto;
+    
+    justify-content: center;
+  }
+  .product-container{
+    width: 95%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* border: 1px solid black; */
+    padding: 30px;
+  font-size: 13px;
+  
+  }
+}
+/* ---------------------AllProducts.jsx UP--------------- */
+
+/* ------------------------Adminlog.jsx DOWN--------------------------- */
+#adminform{
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 60%;
+  margin: 30px auto;
+  padding: 30px;
+}
+/* ------------------------Adminlog.jsx UP--------------------------- */
+/* -------------------------------AdminProDetail.jsx  Down------------------ */
+.product-detail_container{
+  display: flex;
+  width: 80%;
+  margin: 30px auto;
+  padding: 2rem;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  justify-content: space-around;
+}
+.flex01{
+  padding: 20px;
+  border: 1px solid black;
+}
+.flex02{
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+}
+.flex02 >p{
+ margin: 10px 0;
+}
+
+.flex02 >p>span{
+  font-weight: 600;
+}
+.product-card__button1 {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 20px 0;
+}
+.links{
+  display: flex;
+  justify-content: space-around;
+}
+.Link1{
+  /* text-decoration: none; */
+  color: black;
+  }
+/* -------------------------------AdminProDetail.jsx  UP------------------ */
+/* Aboutus.jsx DOWN------------------------------- */
+.about-container{
+  margin: 20px auto  20px auto;
+  width: 80%;
+
+}
+.paragraphs{
+  display: flex;
+  flex-direction: column;
+
+}
+.para{
+  margin: 20px 0;
+}
+
+/* Aboutus.jsx UP------------------------------- */
+/* ------------------------Contact.jsx DOWN------------------------ */
+.form-contact {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  max-width: 600px;
+}
+
+.label1 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.input01,
+.textarea1 {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.textarea1 {
+  height: 10rem;
+}
+
+.contact-button {
+  background-color: #0077b6;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  margin-top: 1rem;
+}
+
+.contact-button:hover {
+  cursor: pointer;
+  background-color: #023e8a;
+}
+
+@media screen and (max-width: 768px) {
+  .contact-form {
+    width: 90%;
+  }
+  
+  .label1 {
+    font-size: 1rem;
+  }
+
+  .input01,
+  .textarea1 {
+    font-size: 1rem;
+  }
+
+  .textarea1 {
+    height: 8rem;
+  }
+
+  .contact-button {
+    font-size: 1rem;
+  }
+}
+
+
+
+
+/* ------------------------Contact.jsx UP------------------------ */
+/* Slider.jsx---------------------------------------------------- */
+.carousel-item img {
+  max-width: 100%;
+  height: auto;
+}
+/* -------------------------button--------------------------------- */
+/* .gglbutton {
+  background-color: #4285f4;
+  color: #fff;
+  border: none; */
+  /* padding: 10px 20px; */
+  /* border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+} */
+.gglbutton{
+  background-color: #075d93;
+  color: white;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+  margin-left: 18px;
+  /* width: 100%; */
+}
+
+.gglbutton:hover {
+  background-color: #357ae8;
+}
+/* ------------------------------------OrderDetail.jsx-----------------------? */
+
+.order-details {
+  width: 80%;
+  margin: auto;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.order-details h3 {
+  font-size: 1.5rem;
+  margin-top: 0;
+}
+
+.order-details p {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.order-details ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.order-details ul li {
+  margin: 1rem 0;
+}
+
+.order-details ul li p {
+  margin: 0;
+}
+
+.loading {
+  font-size: 1.2rem;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.nav-txt-center{
+
+    display: flex;
+    background-color: lightseagreen;
+    align-items: center;
+    /* justify-content: space-between; */
+    justify-content: flex-start;
+    width:80%;
+    margin: auto;
+    padding: 7px 20px;
+  text-align: center;
+}
+
+
+@media (max-width: 1123px) {
+  .nav-txt-center{
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+  }
+}
+/* ---------------------------------AddAdmin.jsx----------------------------- */
+.addadmin-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  width: 80%;
+  margin: 30px auto;
+}
+
+.addadmin-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  width: 80%;
+  max-width: 600px;
+}
+
+.labelad {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.adminipt {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.myadmin-button {
+  background-color: #1e90ff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.myadmin-button:hover {
+  background-color: #007bff;
+}
+
+.comman-span {
+  color: red;
+}
+
+@media (max-width: 768px) {
+  .addadmin-form {
+    width: 90%;
+  }
+}
+/* ------------------------comman-form-------------------------- */
+.commanform-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  width: 80%;
+  margin: 30px auto;
+  flex-direction: column;
+}
+.comman-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  width: 80%;
+  max-width: 600px;
+}
+.labelcomman {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.commanipt{
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+.commanform-button {
+  background-color: #1e90ff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.commanform-button:hover {
+  background-color: #007bff;
+}
+ .carousel-item img {
+  width: 100%;
+  height: auto;
+  max-width: 1024px;
+  max-height: 278px;
+} 

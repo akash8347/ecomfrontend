@@ -1,0 +1,113 @@
+ 
+  // const { state, dispatch } = useContext(cartContext);/
+  // const { proData } = state;
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [selectedCategory, setSelectedCategory] = useState("");
+  // const [minPrice, setMinPrice] = useState("");
+  // const [maxPrice, setMaxPrice] = useState("");
+  // const [companyTerm, setCompanyTerm] = useState("");
+ 
+
+ // useEffect(() => {
+  //   fetch('http://localhost:8000/productapi/fetchproducts')
+  //     .then(response => response.json())
+  //     .then((data) => {
+  //       dispatch({ type: 'SET_PRODUCTS', payload: data })
+  //       setFilteredProData(data);
+  //       console.log(data)
+  //     })
+  //     .catch(error => console.error(error));
+  // }, [dispatch]);
+ 
+ 
+ {/* <div className="filters">
+          <div className="title">
+            <h3>Filters</h3>
+          </div> */}
+          {/* <div className="search-bar">
+            <input
+              className="inputfilter"
+              type="text"
+              placeholder="Search Products"
+              value={searchTerm}
+              onChange={handleSearchInputChange}
+            />
+            <input
+              className="inputfilter"
+              type="text"
+              placeholder="Search by company"
+              value={companyTerm}
+              onChange={handleCompanyInputChange}
+            />
+
+          </div>
+          <div className="category-select">
+            <div className="category" style={{ margin: "12px 0" }}> Category</div>
+            <select value={selectedCategory} onChange={handleCategoryChange}>
+              <option value="">Select a category</option>
+              <option value="mobiles">Mobiles</option>
+              <option value="fridges">Fridges</option>
+              <option value="ac">ACs</option>
+              <option value="tv">TVs</option>
+              <option value="laptops">Laptops</option>
+            </select>
+          </div>
+          <div className="price-filter" style={{ display: 'flex', flexDirection: "column" }}>
+            <div className="price" style={{ margin: "12px 0" }}> Price range</div>
+            <input
+              className="min-price prs"
+              type="number"
+              placeholder="Min"
+              value={minPrice}
+              onChange={handleMinPriceChange}
+            />
+            <input
+              className="max-price prs"
+              type="number"
+              placeholder="Max"
+              value={maxPrice}
+              onChange={handleMaxPriceChange}
+            />
+          </div> */}
+        {/* </div> */}
+
+
+         // const handleSearchInputChange = (event) => {
+  //   const input = event.target.value;
+  //   setSearchTerm(input);
+  //   filterProducts(input, selectedCategory, minPrice, maxPrice, companyTerm);
+  // };
+
+  // const handleCategoryChange = (event) => {
+  //   const category = event.target.value;
+  //   setSelectedCategory(category);
+  //   filterProducts(searchTerm, category, minPrice, maxPrice, companyTerm);
+  // };
+
+  // const handleMinPriceChange = (event) => {
+  //   const price = event.target.value;
+  //   setMinPrice(price);
+  //   filterProducts(searchTerm, selectedCategory, price, maxPrice, companyTerm);
+  // };
+
+  // const handleMaxPriceChange = (event) => {
+  //   const price = event.target.value;
+  //   setMaxPrice(price);
+  //   filterProducts(searchTerm, selectedCategory, minPrice, price);
+  // };
+  // const handleCompanyInputChange = (event) => {
+  //   const input = event.target.value;
+  //   setCompanyTerm(input);
+  //   filterProducts(searchTerm, selectedCategory, minPrice, maxPrice, input); // pass input as companyTerm to filterProducts
+  // };
+  // const filterProducts = (searchTerm, category, minPrice, maxPrice, companyTerm) => {
+  //   const filteredData = proData.filter((product) => {
+  //     const nameMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+  //     const categoryMatch = category === "" || product.category === category;
+  //     const priceMatch = (minPrice === "" || product.price >= minPrice) &&
+  //       (maxPrice === "" || product.price <= maxPrice);
+  //     const companyMatch = companyTerm === "" || product.company.toLowerCase().includes(companyTerm.toLowerCase()); // add condition for company search
+  //     return nameMatch && categoryMatch && priceMatch && companyMatch;
+  //   });
+  //   setFilteredProData(filteredData);
+  // };

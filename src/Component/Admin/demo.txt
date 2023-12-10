@@ -1,0 +1,24 @@
+ <div className="commanform-container">
+                <form className="comman-form" onSubmit={submitHandler}>
+
+                    <label className='labelcomman' htmlFor="name">Name:</label>
+                    <input  className="commanipt" type="text" 
+                        // onChange={(e)=>setName(e.target.value)} value={name} name="name"
+                        onChange={handleChange} name="name"
+                        id="name" placeholder="Enter name" required autoComplete="name" />
+
+<label className='labelcomman' htmlFor="email">Email:</label>
+                <input className="commanipt" type="email" onChange={handleChange}
+                        
+                        // value={email}
+                         name="email" id="email" placeholder="Enter email" required autoComplete="email" />
+            
+            <label className='labelcomman' htmlFor="password">Email:</label>
+
+            <input className="commanipt" type="password" onChange={handleChange}  name="password" id="password"
+                    placeholder="Enter password" required autoComplete="current-password" />
+                    <button className="commanform-button" >submit</button>
+                </form>
+                <div> Already registered? <Link to="/login">Login Here</Link></div>
+                   <span className="comman-span">{error}</span>
+            </div>
