@@ -72,7 +72,7 @@ const deletehandle = async (id) => {
 
     }
     fetch1()
-  }, [dispatch,admin])
+  }, [dispatch,admin,url])
 
 
 
