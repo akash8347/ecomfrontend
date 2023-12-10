@@ -186,7 +186,9 @@ const AllProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/productapi/fetchproducts?currentPage=${currentPage}&searchQuery=${searchQuery}`);
+        let url= process.env.REACT_APP_BACKENDURL
+            // `${url}
+        const response = await fetch(`${url}fetchproducts?currentPage=${currentPage}&searchQuery=${searchQuery}`);
         const data = await response.json();
         const { products, totalPages } = data;
         setFilteredProData(products);
