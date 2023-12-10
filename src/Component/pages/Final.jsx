@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './style.css'
 import { useContext } from 'react'
 import { cartContext } from '../../context/ContextPro.js'
@@ -11,7 +11,7 @@ import Header from './Header'
 
 const Final = () => {
 
-  const [error, setError] = useState('')
+  // const [error, setError] = useState('')
 
   const { state: { cart }, state: { cartTotal }, state: { shippingdata } } = useContext(cartContext)
   const { user } = useContext(AuthContext)
@@ -54,7 +54,7 @@ const Final = () => {
 
       const resData = await res.json();
       if (!res.ok) {
-        setError(resData)
+        // setError(resData)
         console.log(resData)
       } else {
         // document.getElementById('span').innerHTML="<h3>order placed successfully </h3>"
