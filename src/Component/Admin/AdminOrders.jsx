@@ -39,7 +39,7 @@ const AdminOrders = () => {
       func()
     }
 
-  }, [dispatch, admin])
+  }, [dispatch, admin,url])
 
   // -------------------------------PROCESS order----------------------
   const processOrder = async (orderId) => {
