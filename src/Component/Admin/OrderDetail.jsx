@@ -1,27 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import AdminHed from './AdminHed';
 import { useNavigate, useParams } from 'react-router-dom';
-// import { AuthContext } from '../../context/AuthProvider';
-
+import Loading from '../pages/Loading';
 
 const OrderDetail = () => {
   const { id } = useParams();
   let navigate= useNavigate()
-// const {admin}=useContext(AuthContext)
-
-
 let admin=JSON.parse(localStorage.getItem('adminJWT'))
 let {token}=admin
   const [order, setOrder] = useState(null);
-  let url= process.env.REACT_APP_BACKENDURLs
+  let url= process.env.REACT_APP_BACKENDURL
+  console.log(id)
   useEffect(() => {
+  
     const fetchData = async () => {
       
       try {
         // const {token}=admin;
         
         // `${url}
-        const response = await fetch(`${url}/admin/singleorder/${id}`, {
+        const response = await fetch(`${url}/admin/singleorder/${id}`, 
+    {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -37,12 +36,10 @@ let {token}=admin
         console.error(error);
       }
     };
-    fetchData();
-  }, [id,token,url]);
+    
 
-  // const handlePrint = () => {
-  //   window.print();
-  // };
+     fetchData();
+  }, [id,token,url,admin]);
 
   const viewProductDetails = (product) => {
     
@@ -57,29 +54,7 @@ let {token}=admin
       <div className='order-details'  style={{ width: '80%', margin: '15px auto', border: '1px solid black'}}>
         {order ? (
           <>
-            {/* <h3>Order ID: {order._id}</h3>
-            <p>Order Status: {order.orderStatus}</p>
-            <p>Total Cost: {order.totalCost}</p>
-            <p>Shipping Data:</p>
-            <ul>
-              <li>Street: {order.shippingData.street}</li>
-              <li>Area: {order.shippingData.area}</li>
-              <li>City: {order.shippingData.city}</li>
-              <li>State: {order.shippingData.state}</li>
-            </ul>
-            <p>Ordered Products:</p>
-            <ul>
-              {order.orderedProducts.map((product) => (
-                <li key={product._id}>
-                  <p>Name: {product.name}</p>
-                  <p>Company: {product.company}</p>
-                  <p>Price: {product.price}</p>
-                  <p>Quantity: {product.quantity}</p>
-                  <p>Description: {product.description}</p>
-                </li>
-              ))}
-            </ul>
-            <button onClick={handlePrint}>Print Receipt</button> */}
+            
             <div className="order-details-container">
       <h2>Order Details</h2>
       <div className="order-info">
@@ -115,7 +90,10 @@ let {token}=admin
     </div>
           </>
         ) : (
-          <p>Loading...</p>
+          <>
+           <Loading/>
+          </>
+        
         )}
       </div>
     </>
@@ -123,3 +101,36 @@ let {token}=admin
 };
 
 export default OrderDetail;
+
+
+
+
+
+  
+
+    // const fetchData=()=>{
+
+    //   var responseClone; // 1
+    //   const {token}=admin;
+    //   fetch(`${url}/admin/singleorder/${id}`, {
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': `Bearer ${token}`
+    //     }
+    //   })
+    //   .then(function (response) {
+    //       responseClone = response.clone(); // 2
+    //       return response.json();
+    //   })
+    //   .then(function (data) {
+    //       // Do something with data
+    //       setOrder(data)
+    //   }, function (rejectionReason) { // 3
+    //       console.log('Error parsing JSON from response:', rejectionReason, responseClone); // 4
+    //       responseClone.text() // 5
+    //       .then(function (bodyText) {
+    //           console.log('Received the following instead of valid JSON:', bodyText); // 6
+    //       });
+    //   });
+    // }
