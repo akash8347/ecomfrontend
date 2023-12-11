@@ -76,9 +76,9 @@ const Header = () => {
 
                 {showDuplidown && (
                   <div className="dropdown-content">
-                    <Link className='linkdrop' to="/login">mnj</Link>
-                    <Link className='linkdrop' to="/signup">abc</Link>
-                    <Link className='linkdrop' to="/admin">@</Link>
+                    <Link className='linkdrop' to="/login">Login</Link>
+                    <Link className='linkdrop' to="/signup">Signup</Link>
+                    <Link className='linkdrop' to="/admin">Admin</Link>
                   </div>
                   
                 )}
