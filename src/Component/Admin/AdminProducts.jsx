@@ -89,7 +89,7 @@ const AdminProducts = () => {
                     {/* You can customize the card layout based on your requirements */}
                    { console.log(product.image_urls[0])}
                 
-                    <img src={`${url}${product.image_urls[0]}`} alt={product.name} />
+                    <img style={{width:"15rem",height:"auto",maxHeight:"21rem",objectFit:"cover", borderRadius: "5px"}} src={`${url}${product.image_urls[0]}`} alt={product.name} />
                     <div className="product-details">
                       <h3>{product.name}</h3>
                       <p>{product.company}</p>

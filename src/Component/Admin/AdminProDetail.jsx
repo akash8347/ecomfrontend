@@ -73,7 +73,9 @@ const AdminProDetail = () => {
             <div className="flex01">
               <div className="image-container">
               
-                <img className="product-image" alt={product.name} src={`${url}${product.image_urls[selectedColorImageIndex]}`}/>          
+              <img className="product-image" style={{width:"15rem"}} alt={product.name} src={`${url}${product.image_urls[selectedColorImageIndex]}`}/>  
+              
+                       
                 <button onClick={handlePrevImageClick}>{'<'}</button>
                 <button onClick={handleNextImageClick}>{'>'}</button>
               </div>

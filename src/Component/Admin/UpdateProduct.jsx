@@ -491,7 +491,7 @@ const UpdateProduct = () => {
   const handleImageChange = (event) => {
     const color = event.target.getAttribute('data-color');
     const images = formData.colorImages.filter((obj) => obj.color !== color);
-
+    console.log(event.target.files[0])
     for (let i = 0; i < event.target.files.length; i++) {
       const image = event.target.files[i];
       const imageName = `${color}_${i + 1}`;
@@ -639,6 +639,7 @@ const UpdateProduct = () => {
             onChange={handleInputChange}
           />
         </label>
+        {/* {   "sdsd,sdd" ['sdsd','sdd'] } */}
         {formData.colors.split(',').map((color, index) => (
           <div key={index}>
             <label>

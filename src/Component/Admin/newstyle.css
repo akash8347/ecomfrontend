@@ -12,13 +12,13 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
   
-    img {
+    /* img {
       max-width: 100%;
       height: auto;
       max-height: 150px; /* Set a maximum height for the image */
-      object-fit: cover; /* Maintain aspect ratio and cover the container */
-      border-radius: 5px; /* Optional: Add border-radius for rounded corners */
-    }
+      /* object-fit: cover; Maintain aspect ratio and cover the container */
+      /* border-radius: 5px; Optional: Add border-radius for rounded corners */
+   
   
     .product-details {
       padding: 10px;
