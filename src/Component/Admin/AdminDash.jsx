@@ -53,17 +53,18 @@ const deletehandle = async (id) => {
         })
         const json = await res.json()
         if (!res.ok) {
-          setError(json.errormsg)
-          console.log(json.errormsg)
+          setError(json.error || json.errormsg)
+          console.log(json.error || json.errormsg)
+          return;
         }
+        
         console.log(json.users)
         console.log(json.usersCount)
-        
         console.log(json.totalIncome)
 
-        dispatch({ type: 'ALLUSERS', payload: json.users })
-        dispatch({ type: 'TOTAL_USER', payload: json.usersCount })
-        dispatch({ type: 'TOTAL_INCOME', payload: json.totalIncome })
+        dispatch({ type: 'ALLUSERS', payload: json.users || [] })
+        dispatch({ type: 'TOTAL_USER', payload: json.usersCount || 0 })
+        dispatch({ type: 'TOTAL_INCOME', payload: json.totalIncome || 0 })
 
 
       } catch (error) {
@@ -93,8 +94,7 @@ const deletehandle = async (id) => {
           </tbody>
         </table>}
         {
-
-       !error&& admin && allusers.length > 0 ? (
+       !error&& admin && allusers && allusers.length > 0 ? (
             <div className="admindash-containertable">
               <table>
                 <thead>

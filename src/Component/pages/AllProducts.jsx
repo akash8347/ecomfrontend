@@ -167,105 +167,116 @@
 // export default AllProducts;
 // --------------------------------------testing third code---------------------
 import { useEffect, useState } from "react";
-// import { cartContext } from "../../context/ContextPro";
 import SingleProd from './SingleProd';
-import './style.css'
+import './style.css';
 import Header from "./Header";
-import Pagination from 'react-bootstrap/Pagination';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { ConfigProvider, Layout, Typography, Input, Row, Col, Spin, Empty, Pagination, Divider } from 'antd';
+import { SearchOutlined, FilterOutlined } from '@ant-design/icons';
 
+const { Title } = Typography;
+const { Content, Sider } = Layout;
 
 const AllProducts = () => {
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filteredProData, setFilteredProData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
       try {
-        let url= process.env.REACT_APP_BACKENDURL
-            // `${url}
+        let url = process.env.REACT_APP_BACKENDURL;
         const response = await fetch(`${url}/productapi/fetchproducts?currentPage=${currentPage}&searchQuery=${searchQuery}`);
+        if (!response.ok) {
+          setFilteredProData([]);
+          setTotalPages(1);
+          setLoading(false);
+          return;
+        }
         const data = await response.json();
         const { products, totalPages } = data;
-        setFilteredProData(products);
-        setTotalPages(totalPages);
-        console.log(data);
-        console.log(products);
-        console.log(totalPages);
+        setFilteredProData(products || []);
+        setTotalPages(totalPages || 1);
       } catch (error) {
         console.error(error);
+        setFilteredProData([]);
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchProducts();
   }, [currentPage, searchQuery]);
 
-  const handlePageChange = (page, query = '') => {
+  const handlePageChange = (page) => {
     setCurrentPage(page);
-    setSearchQuery(query);
   };
 
+  const onSearch = (value) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
 
   return (
-    <>
-      <h3 style={{ textAlign: "center", fontSize: "30px", margin: "15px 0" }}>
-        Your Own Shop
-      </h3>
-
+    <ConfigProvider theme={{ token: { colorPrimary: '#1890ff' } }}>
       <Header />
-      <div className="store-container">
-        <div className="filters">
-          <div className="title">
-            <h3>Filters</h3>
+      <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
+        <Sider width={280} theme="light" style={{ padding: '24px', borderRight: '1px solid #f0f0f0' }} breakpoint="lg" collapsedWidth="0">
+          <div style={{ marginBottom: '24px' }}>
+            <Title level={4}><FilterOutlined /> Filters</Title>
+            <Divider style={{ margin: '12px 0' }} />
           </div>
-          <div className="search-bar">
-  <input
-    className="inputfilter"
-    type="text"
-    placeholder="Search Products"
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-  />
-  <button onClick={() => handlePageChange(1, searchQuery)}>Search</button>
-</div>
-        </div>
+          <div style={{ marginBottom: '24px' }}>
+            <Title level={5}>Search Products</Title>
+            <Input.Search
+              placeholder="Search by name..."
+              size="large"
+              allowClear
+              onSearch={onSearch}
+              enterButton={<SearchOutlined />}
+            />
+          </div>
+          {/* Future categories can go here */}
+        </Sider>
+        
+        <Content style={{ padding: '32px 40px', background: '#f5f5f5' }}>
+          <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Title level={2} style={{ margin: 0 }}>Discover Products</Title>
+          </div>
 
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '100px 0' }}>
+              <Spin size="large" tip="Loading store catalog..." />
+            </div>
+          ) : filteredProData.length === 0 ? (
+            <div style={{ padding: '50px 0', background: '#fff', borderRadius: '8px' }}>
+              <Empty description={<span>No products matched your search.</span>} />
+            </div>
+          ) : (
+            <>
+              <Row gutter={[24, 24]}>
+                {filteredProData.map((item) => (
+                  <Col xs={24} sm={12} md={12} lg={8} xl={6} key={item._id || item.id}>
+                    <SingleProd item={item} />
+                  </Col>
+                ))}
+              </Row>
 
-
-        <div className="product-container">
-
-          {filteredProData.map((item) => {
-            return <SingleProd key={item.id} item={item} />;
-          })}
-        </div>
-      </div>
-      <Container>
-        <Row>
-          <Col md={{ span: 6, offset: 5 }}>
-            <Pagination>
-              <Pagination.First onClick={() => handlePageChange(1)} />
-              <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} />
-              {Array.from({ length: totalPages }, (_, index) => (
-                <Pagination.Item
-                  key={index + 1}
-                  active={index + 1 === currentPage}
-                  onClick={() => handlePageChange(index + 1)}
-                >
-                  {index + 1}
-                </Pagination.Item>
-              ))}
-              <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} />
-              <Pagination.Last onClick={() => handlePageChange(totalPages)} />
-            </Pagination>
-          </Col>
-        </Row>
-      </Container>
-
-    </>
+              <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'center' }}>
+                <Pagination
+                  current={currentPage}
+                  total={totalPages * 10}
+                  onChange={handlePageChange}
+                  showSizeChanger={false}
+                  size="large"
+                />
+              </div>
+            </>
+          )}
+        </Content>
+      </Layout>
+    </ConfigProvider>
   );
 };
 

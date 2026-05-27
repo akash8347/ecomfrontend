@@ -1425,3 +1425,8 @@ text-align: center;
   max-width: 1024px;
   max-height: 278px;
 } 
+/ *  
+ A n t d  
+ o v e r r i d e s  
+ * /  
+ @media (max-width: 768px) { .desktop-menu { display: none !important; } .desktop-actions { display: none !important; } .mobile-menu-btn { display: inline-flex !important; } }

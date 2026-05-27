@@ -1,48 +1,46 @@
-import Carousel from 'react-bootstrap/Carousel';
-import 'bootstrap/dist/css/bootstrap.css';
+import React from 'react';
+import { Carousel, Image } from 'antd';
 
+const contentStyle = {
+  height: '400px',
+  color: '#fff',
+  lineHeight: '400px',
+  textAlign: 'center',
+  background: '#364d79',
+  overflow: 'hidden',
+  borderRadius: '8px'
+};
 
-function Slider() {
+const Slider = () => {
   return (
-    <Carousel  >
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="images/Source-03-1024x415.webp"
-
-          alt="First slide" 
-         
-        />
-        <Carousel.Caption>
-         
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="images/test.png"
-
-          alt="Second slide"
-         
-        />
-
-        <Carousel.Caption>
-      
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="images/freed.jpg"
-
-          alt="Third slide"
-          
-        />
-
-        <Carousel.Caption>
-         
-        </Carousel.Caption>
-      </Carousel.Item>
+    <Carousel autoplay effect="fade">
+      <div>
+        <div style={contentStyle}>
+          <img
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            src="images/Source-03-1024x415.webp"
+            alt="First slide"
+          />
+        </div>
+      </div>
+      <div>
+        <div style={contentStyle}>
+          <img
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            src="images/test.png"
+            alt="Second slide"
+          />
+        </div>
+      </div>
+      <div>
+        <div style={contentStyle}>
+          <img
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            src="images/freed.jpg"
+            alt="Third slide"
+          />
+        </div>
+      </div>
     </Carousel>
   );
 }

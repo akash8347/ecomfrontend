@@ -43,10 +43,12 @@ const AdminProducts = () => {
 
         if (!res.ok) {
           console.log(allproductjson.error);
+          setIsLoading(false);
+          return;
         }
         let {adminproducts}=allproductjson;
 
-        dispatch({ type: 'ALL_PRODUCTS', payload: adminproducts });
+        dispatch({ type: 'ALL_PRODUCTS', payload: adminproducts || [] });
         setIsLoading(false);
         console.log(adminproducts);
       }
@@ -82,7 +84,7 @@ const AdminProducts = () => {
           <Loading />
         ) : (
           <>
-            {admin && allProducts.length > 0 ? (
+            {admin && allProducts && allProducts.length > 0 ? (
               <div className="admin-product-list">
                 {allProducts.map((product) => (
                   <div className="admin-product-card" key={product.id}>

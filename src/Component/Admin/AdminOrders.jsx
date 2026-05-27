@@ -30,9 +30,10 @@ const AdminOrders = () => {
       let orderjson = await res.json()
       if (!res.ok) {
         console.log(orderjson.error)
+        return;
       }
       console.log(orderjson.orders1)
-      dispatch({ type: 'ALLORDERS', payload: orderjson })
+      dispatch({ type: 'ALLORDERS', payload: orderjson.orders1 || [] })
       console.log(orderjson)
     }
     if (admin) {
@@ -93,7 +94,7 @@ const AdminOrders = () => {
       <div className="admin-container" style={{ margin: "0 auto", width: "80%", paddingBottom: "50px" }}>
 
         {
-          admin && allorders.length > 0 ? (
+          admin && allorders && allorders.length > 0 ? (
             <div className="adminorder-table">
               <table >
                 <thead>

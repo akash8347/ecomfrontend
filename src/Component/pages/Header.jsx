@@ -1,129 +1,95 @@
 
-import React, { useState } from 'react'
-import { Link, Outlet } from "react-router-dom";
-import './style.css'
+import React, { useState, useContext } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Layout, Menu, Button, Dropdown, Space, Badge, Drawer } from 'antd';
+import { ShoppingCartOutlined, UserOutlined, MenuOutlined, LogoutOutlined } from '@ant-design/icons';
 import { cartContext } from '../../context/ContextPro';
-import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthProvider';
+import './style.css';
+
+const { Header: AntHeader } = Layout;
+
 const Header = () => {
-  const { user, dispatch: authDispatch } = useContext(AuthContext)
+  const { user, dispatch: authDispatch } = useContext(AuthContext);
   const { state: { cart }, dispatch: contextdis } = useContext(cartContext);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [  showDuplidown,   setshowDuplidown] = useState(false);
- 
-// const [toggal,seToggal] =useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
   const logoutHandle = () => {
-    localStorage.removeItem('user')
-    authDispatch({ type: 'LOGOUT' })
-    localStorage.removeItem('userOrder')
-    contextdis({ type: 'LOGOUT_ORDER' })
-    localStorage.removeItem('cart')
-    localStorage.removeItem('cartTotal')
-    localStorage.removeItem('shippingData')
-    window.location.reload()
-  }
-  const toggleDropdown = () => {
-    setShowDropdown(!showDropdown);
-    console.log(showDropdown)
+    localStorage.removeItem('user');
+    authDispatch({ type: 'LOGOUT' });
+    localStorage.removeItem('userOrder');
+    contextdis({ type: 'LOGOUT_ORDER' });
+    localStorage.removeItem('cart');
+    localStorage.removeItem('cartTotal');
+    localStorage.removeItem('shippingData');
+    window.location.reload();
   };
-  const toggleDropdowndupli = () => {
-    setshowDuplidown(!showDuplidown);
-    console.log(showDuplidown)
-  };
-  // let url= process.env.REACT_APP_BACKENDURL;
-  // `${url}
 
-  const togglebutton=()=>{
+  const navItems = [
+    { key: 'home', label: <Link to="/">Home</Link> },
+    { key: 'store', label: <Link to="/Store">Store</Link> },
+    ...(user ? [{ key: 'orders', label: <Link to="/orderstatus">Orders</Link> }] : []),
+    { key: 'about', label: <Link to="/aboutus">About</Link> },
+    { key: 'contact', label: <Link to="/contact">Contact</Link> }
+  ];
 
-    
-      const flexCont = document.querySelector('.flex-cont');
-      if (flexCont.style.display === 'none' || flexCont.style.display === '') {
-        flexCont.style.display = 'block';
-      } else {
-        flexCont.style.display = 'none';
-      }
-  
-   }
+  const userMenuItems = [
+    { key: 'login', label: <Link to="/login">Login</Link> },
+    { key: 'signup', label: <Link to="/signup">Signup</Link> },
+    { key: 'admin', label: <Link to="/admin">Admin</Link> }
+  ];
+
   return (
-    <>
-      <div></div>
-      <ul className='nav'>
-        <div className="logo">
-          <i>GOHIL'S</i>
-          <i className='hamburger' onClick={togglebutton} > &#9776;</i>
+    <Layout>
+      <AntHeader style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px #f0f1f2', zIndex: 1, width: '100%', position: 'sticky', top: 0 }}>
+        
+        <div style={{ fontSize: '24px', fontWeight: 'bold', fontStyle: 'italic', letterSpacing: '1px', color: '#1890ff' }}>
+          GOHIL'S
         </div>
-       <div className="flex-cont">
-        <div className='flex1'>
-          <li className='lit'>
-            <Link className='Link' to="/">Home</Link>
-          </li>
-          <li className='lit'>
-            <Link className='Link' to="/Store">Store</Link>
-          </li>
-         { user&& <li className='lit'>
-            <Link className='Link' to="/orderstatus">Orders</Link>
-          </li>}
-          <li className='lit'>
-            <Link className='Link' to="/aboutus">About</Link>
-          </li>
-          <li className='lit'>
-            <Link className='Link' to="/contact">Contact</Link>
-          </li>
-          <div className="dropdown">
-          <button onClick={toggleDropdowndupli} className="dropbtn" >
-                 more<i className="arrow down"></i>
-                </button>
 
-                {showDuplidown && (
-                  <div className="dropdown-content">
-                    <Link className='linkdrop' to="/login">Login</Link>
-                    <Link className='linkdrop' to="/signup">Signup</Link>
-                    <Link className='linkdrop' to="/admin">Admin</Link>
-                  </div>
-                  
-                )}
-                </div>
+        {/* Desktop Menu */}
+        <div className="desktop-menu" style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+          <Menu mode="horizontal" items={navItems} style={{ borderBottom: 'none', minWidth: '400px', display: 'flex', justifyContent: 'center' }} />
         </div>
-        <div className='flex2'>
-          {!user && (
-            <>
-              <div className="dropdown">
-                <button onClick={toggleDropdown} className="dropbtn" >
-                  Login/Signup<i className="arrow down"></i>
-                </button>
-                {showDropdown && (
-                  <div className="dropdown-content">
-                    <Link className='linkdrop' to="/login">Login</Link>
-                    <Link className='linkdrop' to="/signup">Signup</Link>
-                    <Link className='linkdrop' to="/admin">Admin</Link>
-                  </div>
-                  
-                )}
-                
-              
-               
-              </div>
-              
-            
-            </>
+
+        <div className="desktop-actions" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          {!user ? (
+            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
+              <Button type="primary" icon={<UserOutlined />}>Login/Signup</Button>
+            </Dropdown>
+          ) : (
+            <Button danger icon={<LogoutOutlined />} onClick={logoutHandle}>Logout</Button>
           )}
-          {user && (
+
+          <Badge count={cart.length} showZero color="#1890ff">
+            <Button type="text" icon={<ShoppingCartOutlined style={{ fontSize: '20px' }} />} onClick={() => navigate('/Cart')} />
+          </Badge>
+        </div>
+
+        <div className="mobile-menu-btn" style={{ display: 'none' }}>
+           <Button type="text" icon={<MenuOutlined style={{ fontSize: '20px' }} />} onClick={() => setMobileMenuOpen(true)} />
+        </div>
+      </AntHeader>
+
+      <Drawer placement="right" onClose={() => setMobileMenuOpen(false)} open={mobileMenuOpen}>
+        <Menu mode="vertical" items={navItems} onClick={() => setMobileMenuOpen(false)} style={{ borderRight: 'none', marginBottom: '20px' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {!user ? (
             <>
-              {/* <div>{user.email}</div> */}
-              <button onClick={logoutHandle} className='logout btn'>
-                Logout
-              </button>
+              <Button block type="primary" onClick={() => { navigate('/login'); setMobileMenuOpen(false); }}>Login</Button>
+              <Button block onClick={() => { navigate('/signup'); setMobileMenuOpen(false); }}>Signup</Button>
+              <Button block type="dashed" onClick={() => { navigate('/admin'); setMobileMenuOpen(false); }}>Admin</Button>
             </>
+          ) : (
+            <Button block danger icon={<LogoutOutlined />} onClick={() => { logoutHandle(); setMobileMenuOpen(false); }}>Logout</Button>
           )}
-          <li className='li1'>
-            <Link className='Link' to="/Cart">Cart{`(${cart.length})`}</Link>
-          </li>
+          <Button block onClick={() => { navigate('/Cart'); setMobileMenuOpen(false); }} icon={<ShoppingCartOutlined />}>Cart ({cart.length})</Button>
         </div>
-        </div>
-      
-      </ul>
+      </Drawer>
+
       <Outlet />
-    </>
+    </Layout>
   );
 }
 

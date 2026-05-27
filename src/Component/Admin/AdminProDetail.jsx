@@ -23,13 +23,13 @@ const AdminProDetail = () => {
   };
 
   const handleNextImageClick = () => {
-    setSelectedColorImageIndex(prevIndex => (prevIndex + 1) % filteredProduct[0][0].image_urls.length);
+    setSelectedColorImageIndex(prevIndex => (prevIndex + 1) % filteredProduct[0].image_urls.length);
   };
 
   const handlePrevImageClick = () => {
     setSelectedColorImageIndex(prevIndex => {
       const newIndex = prevIndex - 1;
-      return newIndex < 0 ? filteredProduct[0][0].image_urls.length - 1 : newIndex;
+      return newIndex < 0 ? filteredProduct[0].image_urls.length - 1 : newIndex;
     });
   };
 
@@ -68,7 +68,7 @@ const AdminProDetail = () => {
         <p>No product found</p>
       ) : (
         
-        filteredProduct[0].map((product) => (
+        filteredProduct.map((product) => (
           <div className='product-detail_container' key={product.id}>
             <div className="flex01">
               <div className="image-container">

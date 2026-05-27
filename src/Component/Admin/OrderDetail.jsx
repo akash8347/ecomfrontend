@@ -31,7 +31,7 @@ let {token}=admin
         );
         const data = await response.json();
         console.log(data)
-        setOrder(data);
+        setOrder(data.singleorder || data);
       } catch (error) {
         console.error(error);
       }
@@ -59,17 +59,17 @@ let {token}=admin
       <h2>Order Details</h2>
       <div className="order-info">
         <p>
-          Order ID: {order.id} | Date: {new Date(order.created_at).toLocaleString()}
+          Order ID: {order.id || order.order_id} | Date: {new Date(order.created_at || order.order_created_at).toLocaleString()}
         </p>
-        <p>Total Cost: ${order.totalCost}</p>
-        <p>Order Status: {order.order_status}</p>
+        <p>Total Cost: ${order.totalCost || order.total_cost}</p>
+        <p>Order Status: {order.order_status || order.orderStatus}</p>
       </div>
 
       <div className="items-container">
         <h3>Ordered Items</h3>
         {
         
-        order.items.map((item, index) => (
+        (order.items || order.orderedProducts || []).map((item, index) => (
           <div key={index} className="item">
              {/* let url= process.env.REACT_APP_BACKENDURL */}
         {/* // `${url} */}

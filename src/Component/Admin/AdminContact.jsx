@@ -24,10 +24,10 @@ const AdminContact = () => {
       if (!res.ok) {
         console.log(contactjson.error)
         setError(contactjson.error)
+        return;
       }
-      //   dispatch({ type: 'ALLORDERS', payload: orderjson.orders1 })
-      setContacts(contactjson.contacts);
-      console.log(contactjson.contacts)
+      setContacts(Array.isArray(contactjson) ? contactjson : []);
+      console.log(contactjson)
     }
     if (admin) {
       func()
