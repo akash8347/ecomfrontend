@@ -1,4 +1,5 @@
 import { createContext, useEffect, useReducer } from "react";
+import { getDiscountedPrice } from "../utils/pricing";
 
 export const cartContext = createContext();
 
@@ -8,7 +9,7 @@ export const myreducer = (state, action) => {
         case "INCREMENT":
             cart = [...state.cart, { ...action.playload, quantity: 1 }];
             
-            const cartTotalIncremented = state.cartTotal + parseFloat(action.playload.price);
+            const cartTotalIncremented = state.cartTotal + getDiscountedPrice(action.playload);
             localStorage.setItem("cart", JSON.stringify(cart));
             localStorage.setItem("cartTotal", JSON.stringify(cartTotalIncremented));
             return {
@@ -19,7 +20,7 @@ export const myreducer = (state, action) => {
 
         case "DECREMENT":
             cart = state.cart.filter((item) => item.id !== action.playload.id);
-            const cartTotalDecremented = state.cartTotal - parseFloat(action.playload.price);
+            const cartTotalDecremented = state.cartTotal - getDiscountedPrice(action.playload);
             localStorage.setItem("cart", JSON.stringify(cart));
             localStorage.setItem("cartTotal", JSON.stringify(cartTotalDecremented));
             return {
@@ -33,14 +34,14 @@ export const myreducer = (state, action) => {
             return {
                 ...state,
                 cart: updatedCart,
-                cartTotal: state.cartTotal - (parseFloat(removedItem.price) * removedItem.quantity)
+                cartTotal: state.cartTotal - (getDiscountedPrice(removedItem) * removedItem.quantity)
             }
         case "INCREASE_QUANTITY":
             const index = state.cart.findIndex((c) => c.id === action.playload);
             const newCart = [...state.cart];
             newCart[index].quantity += 1;
             return {
-                ...state, cart: newCart, cartTotal: state.cartTotal + parseFloat(newCart[index].price)
+                ...state, cart: newCart, cartTotal: state.cartTotal + getDiscountedPrice(newCart[index])
             }
 
         case "DECREASE_QUANTITY":
@@ -48,7 +49,7 @@ export const myreducer = (state, action) => {
             const newCart1 = [...state.cart];
             newCart1[idx].quantity -= 1;
             return {
-                ...state, cart: newCart1, cartTotal: state.cartTotal - parseFloat(newCart1[idx].price)
+                ...state, cart: newCart1, cartTotal: state.cartTotal - getDiscountedPrice(newCart1[idx])
             }
         case 'SHIPPING_DETAIL':
             return {
@@ -76,7 +77,7 @@ export const ContextPro = ({ children }) => {
         proData: [],
         cart: JSON.parse(localStorage.getItem("cart")) || [],
         cartTotal: JSON.parse(localStorage.getItem("cartTotal")) || 0,
-        shippingdata: {},
+        shippingdata: JSON.parse(localStorage.getItem("shippingData")) || {},
         useOrder: []
     }
     const [state, dispatch] = useReducer(myreducer, initState)

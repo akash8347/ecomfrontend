@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import Header from './Header';
+import { Card, Col, Row, Typography, Input, Button, Space, Alert } from 'antd';
+
+const { Title, Text } = Typography;
 
 const Contact = () => {
   const [name, setName] = useState('');
@@ -46,24 +49,53 @@ const Contact = () => {
 
   return (
     <>
-      <h2 style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>Contact Us</h2>
       <Header />
-      <div className="form-contact">
-        <form className='contact-form' onSubmit={handleSubmit}>
-          <label className='label1' htmlFor="name">Name:</label>
-          <input className='input01' type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
-          {errors.name && <p style={{color:"red"}} className="error-message">{errors.name}</p>}
+      <div style={{ background: 'linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%)', minHeight: '100vh', padding: '28px 20px 56px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <Row gutter={[24, 24]} align="stretch">
+            <Col xs={24} lg={9}>
+              <Card bordered={false} style={{ height: '100%', borderRadius: '24px', background: 'linear-gradient(135deg, #111827 0%, #334155 100%)', color: '#fff', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.12)' }}>
+                <Space direction="vertical" size={16}>
+                  <Text style={{ color: 'rgba(255,255,255,0.72)', letterSpacing: '0.12em', textTransform: 'uppercase', fontSize: '12px' }}>Support</Text>
+                  <Title level={2} style={{ color: '#fff', margin: 0 }}>Contact Us</Title>
+                  <Text style={{ color: 'rgba(255,255,255,0.82)' }}>
+                    Send a message and we’ll get back to you as soon as possible.
+                  </Text>
+                  <Alert type="info" showIcon message="We usually reply within one business day." style={{ borderRadius: '14px', border: 'none' }} />
+                </Space>
+              </Card>
+            </Col>
 
-          <label className='label1' htmlFor="email">Email:</label>
-          <input className='input01' type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          {errors.email && <p style={{color:"red"}} className="error-message">{errors.email}</p>}
-
-          <label className='label1' htmlFor="message">Message:</label>
-          <textarea className='textarea1' id="message" value={message} onChange={(e) => setMessage(e.target.value)} />
-          {errors.message && <p style={{color:"red"}} className="error-message">{errors.message}</p>}
-        
-          <button className='contact-button' type="submit">Submit</button>
-        </form>
+            <Col xs={24} lg={15}>
+              <Card bordered={false} style={{ borderRadius: '24px', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.08)' }}>
+                <form onSubmit={handleSubmit}>
+                  <Row gutter={[16, 16]}>
+                    <Col xs={24} md={12}>
+                      <label className='label1' htmlFor="name">Name</label>
+                      <Input size="large" className='input01' id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+                      {errors.name && <div style={{ color: '#dc2626', marginTop: 6 }}>{errors.name}</div>}
+                    </Col>
+                    <Col xs={24} md={12}>
+                      <label className='label1' htmlFor="email">Email</label>
+                      <Input size="large" className='input01' type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email" />
+                      {errors.email && <div style={{ color: '#dc2626', marginTop: 6 }}>{errors.email}</div>}
+                    </Col>
+                    <Col span={24}>
+                      <label className='label1' htmlFor="message">Message</label>
+                      <Input.TextArea rows={7} className='textarea1' id="message" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="How can we help?" />
+                      {errors.message && <div style={{ color: '#dc2626', marginTop: 6 }}>{errors.message}</div>}
+                    </Col>
+                    <Col span={24}>
+                      <Button type="primary" htmlType="submit" size="large" style={{ height: '46px', borderRadius: '12px', background: '#111827', borderColor: '#111827' }}>
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </form>
+              </Card>
+            </Col>
+          </Row>
+        </div>
       </div>
     </>
   );

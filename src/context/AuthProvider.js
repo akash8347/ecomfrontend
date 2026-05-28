@@ -49,12 +49,14 @@ export const myreducer = (state, action) => {
         //     }
         case 'ADMIN_LOGOUT':
             return {
-                 admin: null
+                ...state,
+                admin: null
             }
 
 
         case 'LOGOUT':
             return {
+                ...state,
                 user: null
             }
 
@@ -66,23 +68,25 @@ export const myreducer = (state, action) => {
 }
 
 export const AuthProvider = ({ children }) => {
-    const initState = {
-        user: null,
-        admin: null
-    }
+    const initState = (() => {
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        const admin = JSON.parse(localStorage.getItem('adminJWT') || 'null');
+
+        return {
+            user,
+            admin
+        };
+    })();
+
     const [state, dispatch] = useReducer(myreducer, initState)
-    console.log(state.admin)
     useEffect(() => {
 
         const user = JSON.parse(localStorage.getItem('user'))
         const admin = JSON.parse(localStorage.getItem('adminJWT'))
-        //    console.log(jsonuser)
-        console.log(admin)
         if (user) {
             dispatch({ type: 'LOGIN', payload: user })
         }
         if (admin) {
-            console.log(admin)
             dispatch({ type: 'ADMIN_LOGIN', payload: admin })
         }
     }, [])

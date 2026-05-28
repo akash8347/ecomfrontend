@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Statistic, Typography, Button, Space } from 'antd';
-import { ShoppingOutlined, GlobalOutlined, SmileOutlined, ShopOutlined } from '@ant-design/icons';
+import React from 'react';
+import { Row, Col, Statistic, Typography, Button, Space, Card, Divider } from 'antd';
+import { ShoppingOutlined, GlobalOutlined, SmileOutlined, ShopOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import Footer from './Footer';
 import Header from './Header';
 import Slider from './Slider';
@@ -17,56 +17,85 @@ const Home = () => {
   return (
     <>
       <Header />
-      <div className="home-container" style={{ background: '#f0f2f5', minHeight: '100vh', paddingBottom: '40px' }}>
-        
-        {/* Hero Section */}
-        <div id='home' style={{
-          background: 'linear-gradient(135deg, #1890ff 0%, #001529 100%)',
-          color: '#fff',
-          padding: '80px 20px',
-          textAlign: 'center',
-          marginBottom: '40px'
-        }}>
-          <Space direction="vertical" size="large">
-            <ShopOutlined style={{ fontSize: '64px', color: '#fff' }} />
-            <Title style={{ color: '#fff', margin: 0 }}>GOHIL ONLINE SHOP</Title>
-            <Paragraph style={{ color: '#e6f7ff', fontSize: '18px', maxWidth: '600px', margin: '0 auto' }}>
-              Discover premium products at unmatched prices. Enjoy up to 50% discount on exclusive collections today.
-            </Paragraph>
-            <Button type="primary" size="large" shape="round" icon={<ShoppingOutlined />} onClick={() => navigate('/store')}>
-              Start Shopping
-            </Button>
-          </Space>
+      <div className="home-container" style={{ background: 'linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%)', minHeight: '100vh', paddingBottom: '40px' }}>
+        <div id="home" style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 20px 0' }}>
+          <div style={{
+            borderRadius: '28px',
+            padding: '56px 32px',
+            background: 'radial-gradient(circle at top left, rgba(255,255,255,0.18), transparent 35%), linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #0ea5e9 100%)',
+            color: '#fff',
+            boxShadow: '0 24px 60px rgba(15, 23, 42, 0.18)'
+          }}>
+            <Row gutter={[24, 24]} align="middle">
+              <Col xs={24} lg={14}>
+                <Space direction="vertical" size={18} style={{ width: '100%' }}>
+                  <ShopOutlined style={{ fontSize: '46px' }} />
+                  <Title style={{ color: '#fff', margin: 0, fontSize: 'clamp(2.2rem, 5vw, 4.2rem)', lineHeight: 1.05 }}>
+                    GOHIL ONLINE SHOP
+                  </Title>
+                  <Paragraph style={{ color: 'rgba(255,255,255,0.84)', fontSize: '18px', maxWidth: '620px', margin: 0 }}>
+                    Discover premium products, quick checkout, and clean browsing in one focused storefront.
+                  </Paragraph>
+                  <Space wrap>
+                    <Button size="large" type="primary" shape="round" icon={<ShoppingOutlined />} onClick={() => navigate('/store')}>
+                      Start Shopping
+                    </Button>
+                    <Button size="large" shape="round" ghost icon={<ArrowRightOutlined />} onClick={() => navigate('/aboutus')}>
+                      Learn More
+                    </Button>
+                  </Space>
+                </Space>
+              </Col>
+              <Col xs={24} lg={10}>
+                <Card bordered={false} style={{ borderRadius: '22px', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)', color: '#fff' }}>
+                  <Row gutter={[16, 16]}>
+                    <Col span={24}>
+                      <Statistic title={<span style={{ color: 'rgba(255,255,255,0.72)' }}>Happy Customers</span>} value={2000} formatter={(value) => <CountUp end={value} duration={2.5} />} valueStyle={{ color: '#fff' }} />
+                    </Col>
+                    <Col span={12}>
+                      <Statistic title={<span style={{ color: 'rgba(255,255,255,0.72)' }}>Store Rating</span>} value={5} suffix="/5" valueStyle={{ color: '#fff' }} />
+                    </Col>
+                    <Col span={12}>
+                      <Statistic title={<span style={{ color: 'rgba(255,255,255,0.72)' }}>Regions</span>} value="Global" valueStyle={{ color: '#fff' }} />
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
+          </div>
         </div>
 
-        {/* Highlight Section */}
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px 60px' }}>
-          <Row gutter={[32, 32]} justify="center">
-            <Col xs={24} sm={8}>
-              <div style={{ background: '#fff', padding: '30px', borderRadius: '8px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                <SmileOutlined style={{ fontSize: '36px', color: '#1890ff', marginBottom: '16px' }} />
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 20px 0' }}>
+          <Row gutter={[20, 20]}>
+            <Col xs={24} md={8}>
+              <Card bordered={false} style={{ borderRadius: '20px', boxShadow: '0 12px 30px rgba(15, 23, 42, 0.06)' }}>
+                <SmileOutlined style={{ fontSize: '28px', color: '#2563eb' }} />
                 <Statistic title="Happy Customers" value={2000} formatter={(value) => <CountUp end={value} duration={2.5} />} />
-              </div>
+              </Card>
             </Col>
-            <Col xs={24} sm={8}>
-              <div style={{ background: '#fff', padding: '30px', borderRadius: '8px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                <ShopOutlined style={{ fontSize: '36px', color: '#52c41a', marginBottom: '16px' }} />
-                <Statistic title="Store Rating" value={5} suffix=" / 5 Stars" />
-              </div>
+            <Col xs={24} md={8}>
+              <Card bordered={false} style={{ borderRadius: '20px', boxShadow: '0 12px 30px rgba(15, 23, 42, 0.06)' }}>
+                <ShopOutlined style={{ fontSize: '28px', color: '#16a34a' }} />
+                <Statistic title="Store Rating" value={5} suffix="/5" />
+              </Card>
             </Col>
-            <Col xs={24} sm={8}>
-              <div style={{ background: '#fff', padding: '30px', borderRadius: '8px', textAlign: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                <GlobalOutlined style={{ fontSize: '36px', color: '#722ed1', marginBottom: '16px' }} />
-                <Statistic title="Global Reach" value={"India, USA"} />
-              </div>
+            <Col xs={24} md={8}>
+              <Card bordered={false} style={{ borderRadius: '20px', boxShadow: '0 12px 30px rgba(15, 23, 42, 0.06)' }}>
+                <GlobalOutlined style={{ fontSize: '28px', color: '#7c3aed' }} />
+                <Statistic title="Global Reach" value="India, USA" />
+              </Card>
             </Col>
           </Row>
         </div>
 
-        {/* Slider Section */}
-        <div style={{ maxWidth: '800px', margin: '0 auto 60px auto', background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-          <Title level={3} style={{ textAlign: 'center', marginBottom: '20px' }}>Featured Products</Title>
-          <Slider />
+        <div style={{ maxWidth: '960px', margin: '28px auto 56px', padding: '0 20px' }}>
+          <Card bordered={false} style={{ borderRadius: '24px', boxShadow: '0 14px 36px rgba(15, 23, 42, 0.08)' }}>
+            <Space direction="vertical" size={10} style={{ width: '100%' }}>
+              <Title level={3} style={{ marginBottom: 0 }}>Featured Products</Title>
+              <Divider style={{ margin: '8px 0 18px' }} />
+              <Slider />
+            </Space>
+          </Card>
         </div>
 
         <Footer />

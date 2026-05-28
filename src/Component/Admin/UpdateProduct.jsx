@@ -457,29 +457,108 @@
 // };
 
 // export default UpdateProduct;
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminHed from './AdminHed';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 // import { adminContext } from './AdminProvider';
 import { AuthContext } from '../../context/AuthProvider';
+import { Button, Card, Image, Space, Typography } from 'antd';
 
 const UpdateProduct = () => {
   const { admin } = useContext(AuthContext);
   // const { allProducts } = useContext(adminContext);
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   const initialFormData = {
     category: '',
     name: '',
     company: '',
-    price: '',
+    market_price: '',
+    discounted_price: '',
     description: '',
     colors: '',
     colorImages: [],
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  const [existingPreviewBase, setExistingPreviewBase] = useState('');
+
+  const isAbsolutePreviewUrl = (value) => /^https?:|^data:|^blob:/i.test(String(value || ''));
+
+  const buildPreviewSrc = (value) => {
+    if (!value) return '';
+    if (isAbsolutePreviewUrl(value)) {
+      return value;
+    }
+    return `${existingPreviewBase}${value}`;
+  };
+
+  const normalizeColorList = (colorsText) =>
+    String(colorsText || '')
+      .split(',')
+      .map((color) => color.trim())
+      .filter(Boolean);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem('updateprod');
+    if (!storedData) {
+      return;
+    }
+
+    try {
+      const product = JSON.parse(storedData);
+      const colors = product.colors || '';
+      const colorsList = normalizeColorList(colors);
+      const imageUrls = Array.isArray(product.image_urls) ? product.image_urls : [];
+      const colorMapFromImages = {};
+
+      imageUrls.forEach((imageUrl, index) => {
+        if (colorsList.length === 0) return;
+        const colorName = colorsList[index % colorsList.length];
+        if (!colorMapFromImages[colorName]) {
+          colorMapFromImages[colorName] = [];
+        }
+        colorMapFromImages[colorName].push({
+          color: colorName,
+          imageUrl,
+        });
+      });
+
+      const mappedFromImageUrls = imageUrls.map((imageUrl, index) => ({
+        color: colorsList[index] || colorsList[index % colorsList.length] || `Color ${index + 1}`,
+        imageUrl,
+      }));
+      const mappedFromColorImages = Array.isArray(product.colorImages)
+        ? product.colorImages
+            .map((img, index) => {
+              if (!img) return null;
+              return {
+                color: img.color || colorsList[index] || `Color ${index + 1}`,
+                imageUrl: img.imageUrl || img.url || '',
+              };
+            })
+            .filter(Boolean)
+        : [];
+
+      setFormData({
+        category: product.category || '',
+        name: product.name || '',
+        company: product.company || '',
+        market_price: product.market_price ?? product.price ?? '',
+        discounted_price: product.discounted_price ?? '',
+        description: product.description || '',
+        colors,
+        colorImages: mappedFromColorImages.length > 0
+          ? mappedFromColorImages
+          : (Object.keys(colorMapFromImages).length > 0 ? Object.values(colorMapFromImages).flat() : mappedFromImageUrls)
+      });
+      setExistingPreviewBase(process.env.REACT_APP_BACKENDURL || '');
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const handleInputChange = (event) => {
     setFormData({
@@ -489,13 +568,13 @@ const UpdateProduct = () => {
   };
 
   const handleImageChange = (event) => {
-    const color = event.target.getAttribute('data-color');
-    const images = formData.colorImages.filter((obj) => obj.color !== color);
+    const color = (event.target.getAttribute('data-color') || '').trim();
+    const images = formData.colorImages.filter((obj) => (obj.color || '').trim().toLowerCase() !== color.toLowerCase());
     console.log(event.target.files[0])
     for (let i = 0; i < event.target.files.length; i++) {
       const image = event.target.files[i];
       const imageName = `${color}_${i + 1}`;
-      images.push({ color, imageName, file: image });
+      images.push({ color, imageName, file: image, imageUrl: URL.createObjectURL(image), isNew: true });
     }
 
     setFormData({
@@ -521,8 +600,12 @@ const UpdateProduct = () => {
       alert('Please enter a company name.');
       return;
     }
-    if (formData.price === '' || isNaN(formData.price)) {
-      alert('Please enter a valid price.');
+    if (formData.market_price === '' || isNaN(formData.market_price)) {
+      alert('Please enter a valid market price.');
+      return;
+    }
+    if (formData.discounted_price === '' || isNaN(formData.discounted_price)) {
+      alert('Please enter a valid discounted price.');
       return;
     }
     if (formData.colors.trim() === '') {
@@ -539,9 +622,10 @@ const UpdateProduct = () => {
     formDataToSend.append('company', formData.company);
     formDataToSend.append('description', formData.description);
     formDataToSend.append('category', formData.category);
-    formDataToSend.append('price', formData.price);
+    formDataToSend.append('market_price', formData.market_price);
+    formDataToSend.append('discounted_price', formData.discounted_price);
 
-    formData.colorImages.forEach((image) => {
+    formData.colorImages.filter((image) => image?.file).forEach((image) => {
       formDataToSend.append('colorImages', image.file);
     });
     let url= process.env.REACT_APP_BACKENDURL
@@ -567,99 +651,77 @@ const UpdateProduct = () => {
 
   return (
     <>
-      <h2 className="admin-h1">Update Product</h2>
       <AdminHed />
-      <div className="update-product-container addnewproduct-container">
-        <form className="update-product-form  addProduct-form" onSubmit={handleSubmit}>
-          {/* Form fields here... */}
-          {/* Same form fields as in AddNewProduct component */}
-          <label>
-            Category:
-          <select
-            className="input1"
-            name="category"
-            value={formData.category}
-            onChange={handleInputChange}
-            >
-              <option value="">Select a category</option>
-            <option value="mobiles">Kurta</option>
-              <option value="fridges">Lehnga choli</option>
-              <option value="ac">kids</option>
-              <option value="tv">shirt</option>
-              <option value="laptops">saree</option>
-            </select>
-          </label>
-        <label>
-          Product Name:
-          <input
-            className="input1"
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-          />
-          </label>
-          <label>
+      <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%)', padding: '28px 20px 56px' }}>
+        <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
+          <Space direction="vertical" size={8} style={{ width: '100%', marginBottom: '18px' }}>
+            <Typography.Text type="secondary" style={{ letterSpacing: '0.12em', textTransform: 'uppercase', fontSize: '12px' }}>Catalog</Typography.Text>
+            <Typography.Title level={3} style={{ margin: 0 }}>Update product</Typography.Title>
+          </Space>
 
-          company:
-          
-            <input
-            className="input1"
-            type="text"
-            name="company"
-            value={formData.company}
-            onChange={handleInputChange}
-          />
-        </label>
-        <label>
-          Price:
-          <input
-            className="input1"
-            type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleInputChange}
-            />
-          </label>
-        <label className='txtlabel'>
-            Description:
-            <textarea
-            className="textarea1"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}             />
-          </label>
-        <label>
-          Colors:
-          <input
-            className="input1"
-            type="text"
-            name="colors"
-            value={formData.colors}
-            onChange={handleInputChange}
-          />
-        </label>
-        {/* {   "sdsd,sdd" ['sdsd','sdd'] } */}
-        {formData.colors.split(',').map((color, index) => (
-          <div key={index}>
-            <label>
-              {color} Images:
-              <input
-                type="file"
-                accept="image/*"
-                name='image'
-                data-color={color}
-                onChange={handleImageChange}
-                multiple
-              />
-            </label>
-         
-          </div>
-        ))}
-          <button className="btnupdate" type="submit">
-            Update
-          </button>
-        </form>
+          <Card bordered={false} style={{ borderRadius: '24px', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.08)' }}>
+            <form className="update-product-form  addProduct-form" onSubmit={handleSubmit}>
+              <label>Category</label>
+              <select className="input1" name="category" value={formData.category} onChange={handleInputChange}>
+                <option value="">Select a category</option>
+                <option value="mobiles">Kurta</option>
+                <option value="fridges">Lehnga choli</option>
+                <option value="ac">kids</option>
+                <option value="tv">shirt</option>
+                <option value="laptops">saree</option>
+              </select>
+
+              <label>Product Name</label>
+              <input className="input1" type="text" name="name" value={formData.name} onChange={handleInputChange} />
+
+              <label>Company</label>
+              <input className="input1" type="text" name="company" value={formData.company} onChange={handleInputChange} />
+
+              <label>Market Price</label>
+              <input className="input1" type="number" name="market_price" value={formData.market_price} onChange={handleInputChange} />
+
+              <label>Discounted Price</label>
+              <input className="input1" type="number" name="discounted_price" value={formData.discounted_price} onChange={handleInputChange} />
+
+              <label className='txtlabel'>Description</label>
+              <textarea className="textarea1" name="description" value={formData.description} onChange={handleInputChange} />
+
+              <label>Colors</label>
+              <input className="input1" type="text" name="colors" value={formData.colors} onChange={handleInputChange} />
+
+              {normalizeColorList(formData.colors).map((color, index) => (
+                <div key={index} style={{ marginTop: '10px' }}>
+                  <label>
+                    {color} Images:
+                    <input type="file" accept="image/*" name='image' data-color={color} onChange={handleImageChange} multiple />
+                  </label>
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' }}>
+                    {formData.colorImages
+                      .filter((obj) => (obj.color || '').trim().toLowerCase() === color.toLowerCase())
+                      .map((obj, previewIndex) => {
+                        const previewSrc = buildPreviewSrc(obj?.imageUrl);
+
+                        return (
+                          <Image
+                            key={`${color}-${previewIndex}`}
+                            src={previewSrc}
+                            alt={`${color}-${previewIndex}`}
+                            preview={false}
+                            style={{ width: '84px', height: '84px', objectFit: 'contain', borderRadius: '8px', border: '1px solid #d9d9d9', background: '#fff', padding: '4px' }}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+              ))}
+
+              <Space style={{ marginTop: '12px' }}>
+                <button className="btnupdate" type="submit">Update</button>
+                <Button type="default" onClick={() => navigate('/adminproducts')}>Cancel</Button>
+              </Space>
+            </form>
+          </Card>
+        </div>
       </div>
     </>
   );

@@ -12,8 +12,6 @@ import SignUp from "./Component/pages/SignUp.jsx";
 import Login from "./Component/pages/Login";
 import { AuthContext } from "./context/AuthProvider";
 import { useContext } from "react";
-import Shipping from "./Component/pages/Shipping";
-import Final from "./Component/pages/Final";
 import OrderStatus from './Component/pages/OrderStatus'
 import NotFound from "./Component/pages/NotFound";
 import Adminlog from "../src/Component/Admin/Adminlog.jsx"
@@ -30,8 +28,6 @@ import AddAdmin from "./Component/Admin/AddAdmin.jsx"
 import AdminContact from "./Component/Admin/AdminContact.jsx"
 function App() {
   const { user, admin } = useContext(AuthContext);
-
-  console.log(admin)
   return (
     <>
 
@@ -41,11 +37,14 @@ function App() {
           <Route path="/contact" element={<Contact />} />
 
           <Route path="/store" element={<AllProducts />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/Cart" element={<Cart />} />
           <Route path="/login" element={user === null ? (<Login />) : (<Navigate to="/" />)} />
           <Route path="/signup" element={user === null ? (<SignUp />) : (<Navigate to="/" />)} />
-          <Route path="/shipping" element={<Shipping />} />
-          <Route path="/final" element={<Final />} />
+          <Route path="/address" element={<Navigate to="/cart" replace />} />
+          <Route path="/payment" element={<Navigate to="/cart" replace />} />
+          <Route path="/shipping" element={<Navigate to="/cart" replace />} />
+          <Route path="/final" element={<Navigate to="/cart" replace />} />
           <Route path="/orderstatus" element={<OrderStatus />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/productdetail/:id1" element={<ProductDetail />} />

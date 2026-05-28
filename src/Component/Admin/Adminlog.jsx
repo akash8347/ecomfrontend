@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react"
-import {useNavigate } from "react-router-dom"
-// import { AuthContext } from "../context/AuthProvider"
+import { useNavigate } from "react-router-dom"
 import { AuthContext } from "../../context/AuthProvider"
 import AdminHed from "./AdminHed"
-import { Link } from "react-router-dom"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
+import { Button, Card, Input, Space, Typography, Alert } from "antd"
 
 const Adminlog = () => {
     // const location=useLocation()
@@ -76,18 +75,32 @@ const Adminlog = () => {
         <>
 {!admin?(
     <>
-    
-     <h2 className="admin-h1"> Admin Login</h2>
+     
      <AdminHed/>
-    <form onSubmit={submitHandler} id="adminform">
-        <input required onChange={handleChange} type="email" name="email" placeholder="enter email" style={{ textAlign: "center", margin: "10px 0px", padding: "10px 10px", fontSize: "20px" }} />
-        <input required onChange={handleChange} type="password" name="password" placeholder="enter password" style={{ textAlign: "center", margin: "10px 0px", padding: "10px 10px", fontSize: "20px" }} />
-        <button style={{ margin: "10px 0px", padding: "10px 10px", fontSize: "20px" }}>submit</button>
-
-        {/* <div> not registered? <Link to="/SignUp">Register Here</Link></div> */}
-        <span>{error}</span>
-        <Link style={{textAlign:"center"}} to='/home'>Home</Link>
-    </form>
+        <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%)', padding: '28px 20px 56px' }}>
+            <div style={{ maxWidth: '520px', margin: '0 auto' }}>
+                <Card bordered={false} style={{ borderRadius: '24px', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.08)' }}>
+                    <Space direction="vertical" size={10} style={{ width: '100%', marginBottom: '18px' }}>
+                        <Typography.Text type="secondary" style={{ letterSpacing: '0.12em', textTransform: 'uppercase', fontSize: '12px' }}>Admin access</Typography.Text>
+                        <Typography.Title level={2} style={{ margin: 0 }}>Admin Login</Typography.Title>
+                        <Typography.Text type="secondary">Use your admin credentials to continue.</Typography.Text>
+                    </Space>
+                    {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: '16px', borderRadius: '12px' }} /> : null}
+                    <form onSubmit={submitHandler} id="adminform">
+                        <Space direction="vertical" size={14} style={{ width: '100%' }}>
+                            <Input size="large" required onChange={handleChange} type="email" name="email" placeholder="Email" />
+                            <Input.Password size="large" required onChange={handleChange} name="password" placeholder="Password" />
+                            <Button type="primary" htmlType="submit" size="large" block style={{ height: '46px', borderRadius: '12px', background: '#111827', borderColor: '#111827' }}>
+                                Sign in
+                            </Button>
+                        </Space>
+                    </form>
+                    <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                        <Link to='/home'>Home</Link>
+                    </div>
+                </Card>
+            </div>
+        </div>
     </>
    
 ):(<><h1>you are already logged in <Link to='/admindash'>dashbord</Link> </h1>

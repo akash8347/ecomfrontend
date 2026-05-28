@@ -133,6 +133,7 @@ import { cartContext } from '../../context/ContextPro';
 import Header from './Header';
 import { Row, Col, Typography, Button, Space, Image, Divider, Spin, Card, Descriptions, Tag } from 'antd';
 import { ShoppingCartOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { formatPrice, getDiscountPercent, getDiscountedPrice, getMarketPrice } from '../../utils/pricing';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -211,32 +212,72 @@ const ProductDetail = () => {
                 <Row gutter={[40, 40]}>
                   {/* Image Gallery Column */}
                   <Col xs={24} md={10}>
-                    <div style={{ background: '#fafafa', borderRadius: '12px', padding: '20px', textAlign: 'center', position: 'relative' }}>
-                      <Image
-                        src={`${url}${product.image_urls[selectedColorImageIndex]}`}
-                        alt={product.name}
-                        style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain' }}
-                      />
+                    <div style={{ padding: '10px' }}>
+                      {/* Main Image */}
+                      <div style={{ 
+                        background: '#fff', 
+                        borderRadius: '12px', 
+                        padding: '20px', 
+                        textAlign: 'center', 
+                        border: '1px solid #f0f0f0',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                        marginBottom: '20px'
+                      }}>
+                        <Image
+                          src={`${url}${product.image_urls && product.image_urls.length > 0 ? product.image_urls[selectedColorImageIndex] : (product.image || '')}`}
+                          alt={product.name}
+                          style={{ maxWidth: '100%', maxHeight: '450px', objectFit: 'contain' }}
+                        />
+                      </div>
                       
-                      {product.image_urls.length > 1 && (
-                        <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                          <Button icon={<ArrowLeftOutlined />} onClick={handlePrevImageClick} />
-                          <Space>
-                            {product.image_urls.map((_, index) => (
+                      {/* Thumbnail Slider */}
+                      {product.image_urls && product.image_urls.length > 1 && (
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          gap: '15px' 
+                        }}>
+                          <Button 
+                            type="text" 
+                            icon={<ArrowLeftOutlined />} 
+                            onClick={handlePrevImageClick} 
+                            style={{ background: '#f5f5f5', borderRadius: '50%' }}
+                          />
+                          <Space size="middle" style={{ overflowX: 'auto', padding: '10px 0' }}>
+                            {product.image_urls.map((imgUrl, index) => (
                               <div
                                 key={index}
                                 onClick={() => handleColorClick(index)}
                                 style={{
-                                  width: '12px',
-                                  height: '12px',
-                                  borderRadius: '50%',
-                                  background: index === selectedColorImageIndex ? '#1890ff' : '#d9d9d9',
-                                  cursor: 'pointer'
+                                  width: '70px',
+                                  height: '70px',
+                                  borderRadius: '8px',
+                                  border: index === selectedColorImageIndex ? '2px solid #1890ff' : '1px solid #e8e8e8',
+                                  padding: '4px',
+                                  cursor: 'pointer',
+                                  background: '#fff',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  transition: 'border 0.3s ease',
+                                  opacity: index === selectedColorImageIndex ? 1 : 0.7
                                 }}
-                              />
+                              >
+                                <img 
+                                  src={`${url}${imgUrl}`} 
+                                  alt={`View ${index + 1}`} 
+                                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} 
+                                />
+                              </div>
                             ))}
                           </Space>
-                          <Button icon={<ArrowRightOutlined />} onClick={handleNextImageClick} />
+                          <Button 
+                            type="text" 
+                            icon={<ArrowRightOutlined />} 
+                            onClick={handleNextImageClick} 
+                            style={{ background: '#f5f5f5', borderRadius: '50%' }}
+                          />
                         </div>
                       )}
                     </div>
@@ -249,7 +290,17 @@ const ProductDetail = () => {
                       {product.company}
                     </Tag>
                     
-                    <Title level={1} style={{ color: '#f5222d', marginTop: '10px' }}>₹ {product.price}</Title>
+                    <Space align="baseline" size={12} style={{ marginTop: '10px', flexWrap: 'wrap' }}>
+                      <Title level={1} style={{ color: '#f5222d', margin: 0 }}>₹ {formatPrice(getDiscountedPrice(product))}</Title>
+                      {getMarketPrice(product) > getDiscountedPrice(product) && (
+                        <Text delete style={{ color: '#8c8c8c', fontSize: '18px' }}>₹ {formatPrice(getMarketPrice(product))}</Text>
+                      )}
+                      {getDiscountPercent(product) > 0 && (
+                        <Tag color="red" style={{ borderRadius: '999px', margin: 0, fontWeight: 700 }}>
+                          {getDiscountPercent(product)}% OFF
+                        </Tag>
+                      )}
+                    </Space>
                     <Divider />
                     
                     <Title level={5}>Product Description</Title>

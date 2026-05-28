@@ -672,14 +672,18 @@ import axios from 'axios';
 import AdminHed from './AdminHed';
 import '../pages/style.css'
 import { AuthContext } from '../../context/AuthProvider';
+import { useNavigate } from 'react-router-dom';
+import { Button, Card, Col, Input, Row, Select, Space, Typography, message } from 'antd';
 
 const AddNewProduct = () => {
   const {admin}=useContext(AuthContext)
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     category: '',
     name: '',
     company: '',
-    price: '',
+    market_price: '',
+    discounted_price: '',
     description: '',
     colors: '',
     colorImages: [],
@@ -726,8 +730,12 @@ const AddNewProduct = () => {
       alert('Please enter a company name.');
       return;
     }
-    if (formData.price === '' || isNaN(formData.price)) {
-      alert('Please enter a valid price.');
+    if (formData.market_price === '' || isNaN(formData.market_price)) {
+      alert('Please enter a valid market price.');
+      return;
+    }
+    if (formData.discounted_price === '' || isNaN(formData.discounted_price)) {
+      alert('Please enter a valid discounted price.');
       return;
     }
     if (formData.colors.trim() === '') {
@@ -744,7 +752,8 @@ const AddNewProduct = () => {
     formDataToSend.append('company', formData.company);
     formDataToSend.append('description', formData.description);
     formDataToSend.append('category', formData.category);
-    formDataToSend.append('price', formData.price);
+    formDataToSend.append('market_price', formData.market_price);
+    formDataToSend.append('discounted_price', formData.discounted_price);
 
     formData.colorImages.forEach((image) => {
       formDataToSend.append('colorImages', image.file);
@@ -756,7 +765,7 @@ const AddNewProduct = () => {
     try {
       let url= process.env.REACT_APP_BACKENDURL
       
-      const response = await axios.post(
+      await axios.post(
         `${url}/productapi/createproduct`,
         formDataToSend,
         {
@@ -766,9 +775,11 @@ const AddNewProduct = () => {
           },
         }
       );
-      console.log(response.data);
+      message.success('Product created successfully');
+      navigate('/adminproducts');
     } catch (error) {
       console.error(error);
+      message.error(error?.response?.data?.error || 'Failed to create product');
     }
   };
   
@@ -778,96 +789,77 @@ const AddNewProduct = () => {
   
   return (
     <>
-    <h2 className="admin-h1">Add New Product</h2>
        <AdminHed />
      { admin?(<>
-      <div className="addnewproduct-container">
-      <form className="addProduct-form" onSubmit={handleSubmit}>
-      <label>
-            Category:
-          <select
-            className="input1"
-            name="category"
-            value={formData.category}
-            onChange={handleInputChange}
-            >
-              <option value="">Select a category</option>
-            <option value="mobiles">Kurta</option>
-              <option value="fridges">Lehnga choli</option>
-              <option value="ac">kids</option>
-              <option value="tv">shirt</option>
-              <option value="laptops">saree</option>
-            </select>
-          </label>
-        <label>
-          Product Name:
-          <input
-            className="input1"
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-          />
-          </label>
-          <label>
+      <div style={{ minHeight: 'calc(100vh - 80px)', background: 'linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%)', padding: '28px 20px 56px' }}>
+        <div style={{ maxWidth: '980px', margin: '0 auto' }}>
+          <Space direction="vertical" size={8} style={{ width: '100%', marginBottom: '18px' }}>
+            <Typography.Text type="secondary" style={{ letterSpacing: '0.12em', textTransform: 'uppercase', fontSize: '12px' }}>Catalog</Typography.Text>
+            <Typography.Title level={2} style={{ margin: 0 }}>Add new product</Typography.Title>
+          </Space>
 
-          company:
-          
-            <input
-            className="input1"
-            type="text"
-            name="company"
-            value={formData.company}
-            onChange={handleInputChange}
-          />
-        </label>
-        <label>
-          Price:
-          <input
-            className="input1"
-            type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleInputChange}
-            />
-          </label>
-        <label className='txtlabel'>
-            Description:
-            <textarea
-            className="textarea1"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}             />
-          </label>
-        <label>
-          Colors:
-          <input
-            className="input1"
-            type="text"
-            name="colors"
-            value={formData.colors}
-            onChange={handleInputChange}
-          />
-        </label>
-        {formData.colors.split(',').map((color, index) => (
-          <div key={index}>
-            <label>
-              {color} Images:
-              <input
-                type="file"
-                accept="image/*"
-                name='image'
-                data-color={color}
-                onChange={handleImageChange}
-                multiple
-              />
-            </label>
-         
-          </div>
-        ))}
-        <button type="submit" className='btnupdate'>Submit</button>
-      </form>
-    </div>
+          <Card bordered={false} style={{ borderRadius: '24px', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.08)' }}>
+            <form className="addProduct-form" onSubmit={handleSubmit}>
+              <Row gutter={[16, 16]}>
+                <Col xs={24} md={12}>
+                  <label>Category</label>
+                  <Select
+                    className="input1"
+                    style={{ width: '100%' }}
+                    name="category"
+                    value={formData.category || undefined}
+                    onChange={(value) => setFormData({ ...formData, category: value })}
+                    placeholder="Select category"
+                    options={[
+                      { value: '', label: 'Select a category', disabled: true },
+                      { value: 'mobiles', label: 'Kurta' },
+                      { value: 'fridges', label: 'Lehnga choli' },
+                      { value: 'ac', label: 'Kids' },
+                      { value: 'tv', label: 'Shirt' },
+                      { value: 'laptops', label: 'Saree' }
+                    ]}
+                  />
+                </Col>
+                <Col xs={24} md={12}>
+                  <label>Product Name</label>
+                  <Input className="input1" type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Product name" />
+                </Col>
+                <Col xs={24} md={12}>
+                  <label>Company</label>
+                  <Input className="input1" type="text" name="company" value={formData.company} onChange={handleInputChange} placeholder="Brand or company" />
+                </Col>
+                <Col xs={24} md={6}>
+                  <label>Market Price</label>
+                  <Input className="input1" type="number" name="market_price" value={formData.market_price} onChange={handleInputChange} placeholder="0" />
+                </Col>
+                <Col xs={24} md={6}>
+                  <label>Discounted Price</label>
+                  <Input className="input1" type="number" name="discounted_price" value={formData.discounted_price} onChange={handleInputChange} placeholder="0" />
+                </Col>
+                <Col xs={24}>
+                  <label>Description</label>
+                  <Input.TextArea className="textarea1" name="description" value={formData.description} onChange={handleInputChange} rows={5} placeholder="Describe the product" />
+                </Col>
+                <Col xs={24}>
+                  <label>Colors</label>
+                  <Input className="input1" type="text" name="colors" value={formData.colors} onChange={handleInputChange} placeholder="comma separated colors" />
+                </Col>
+                {formData.colors.split(',').map((color) => color.trim()).filter(Boolean).map((color, index) => (
+                  <Col xs={24} md={12} key={index}>
+                    <label>{color} Images</label>
+                    <Input type="file" accept="image/*" data-color={color} onChange={handleImageChange} multiple />
+                  </Col>
+                ))}
+                <Col span={24}>
+                  <Button type="primary" htmlType="submit" size="large" style={{ height: '46px', borderRadius: '12px', background: '#111827', borderColor: '#111827' }}>
+                    Submit Product
+                  </Button>
+                </Col>
+              </Row>
+            </form>
+          </Card>
+        </div>
+      </div>
       </>):(
       <>
       {!admin&&<h2>admin not logged in 123</h2>}

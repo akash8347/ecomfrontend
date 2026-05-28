@@ -1,10 +1,11 @@
 
 import React, { useState, useContext } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { Layout, Menu, Button, Dropdown, Space, Badge, Drawer } from 'antd';
+import { Layout, Menu, Button, Badge, Drawer } from 'antd';
 import { ShoppingCartOutlined, UserOutlined, MenuOutlined, LogoutOutlined } from '@ant-design/icons';
 import { cartContext } from '../../context/ContextPro';
 import { AuthContext } from '../../context/AuthProvider';
+import AuthModal from './AuthModal';
 import './style.css';
 
 const { Header: AntHeader } = Layout;
@@ -13,6 +14,8 @@ const Header = () => {
   const { user, dispatch: authDispatch } = useContext(AuthContext);
   const { state: { cart }, dispatch: contextdis } = useContext(cartContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authTab, setAuthTab] = useState('login');
   const navigate = useNavigate();
 
   const logoutHandle = () => {
@@ -23,6 +26,7 @@ const Header = () => {
     localStorage.removeItem('cart');
     localStorage.removeItem('cartTotal');
     localStorage.removeItem('shippingData');
+    localStorage.removeItem('checkoutSelectedAddress');
     window.location.reload();
   };
 
@@ -34,11 +38,10 @@ const Header = () => {
     { key: 'contact', label: <Link to="/contact">Contact</Link> }
   ];
 
-  const userMenuItems = [
-    { key: 'login', label: <Link to="/login">Login</Link> },
-    { key: 'signup', label: <Link to="/signup">Signup</Link> },
-    { key: 'admin', label: <Link to="/admin">Admin</Link> }
-  ];
+  const openAuthModal = (tab = 'login') => {
+    setAuthTab(tab);
+    setAuthOpen(true);
+  };
 
   return (
     <Layout>
@@ -55,15 +58,15 @@ const Header = () => {
 
         <div className="desktop-actions" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           {!user ? (
-            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
-              <Button type="primary" icon={<UserOutlined />}>Login/Signup</Button>
-            </Dropdown>
+            <Button type="primary" icon={<UserOutlined />} onClick={() => openAuthModal('login')}>
+              Login / Signup
+            </Button>
           ) : (
             <Button danger icon={<LogoutOutlined />} onClick={logoutHandle}>Logout</Button>
           )}
 
           <Badge count={cart.length} showZero color="#1890ff">
-            <Button type="text" icon={<ShoppingCartOutlined style={{ fontSize: '20px' }} />} onClick={() => navigate('/Cart')} />
+            <Button type="text" icon={<ShoppingCartOutlined style={{ fontSize: '20px' }} />} onClick={() => navigate('/cart')} />
           </Badge>
         </div>
 
@@ -77,16 +80,22 @@ const Header = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {!user ? (
             <>
-              <Button block type="primary" onClick={() => { navigate('/login'); setMobileMenuOpen(false); }}>Login</Button>
-              <Button block onClick={() => { navigate('/signup'); setMobileMenuOpen(false); }}>Signup</Button>
+              <Button block type="primary" onClick={() => { openAuthModal('login'); setMobileMenuOpen(false); }}>Login</Button>
+              <Button block onClick={() => { openAuthModal('signup'); setMobileMenuOpen(false); }}>Signup</Button>
               <Button block type="dashed" onClick={() => { navigate('/admin'); setMobileMenuOpen(false); }}>Admin</Button>
             </>
           ) : (
             <Button block danger icon={<LogoutOutlined />} onClick={() => { logoutHandle(); setMobileMenuOpen(false); }}>Logout</Button>
           )}
-          <Button block onClick={() => { navigate('/Cart'); setMobileMenuOpen(false); }} icon={<ShoppingCartOutlined />}>Cart ({cart.length})</Button>
+          <Button block onClick={() => { navigate('/cart'); setMobileMenuOpen(false); }} icon={<ShoppingCartOutlined />}>Cart ({cart.length})</Button>
         </div>
       </Drawer>
+
+      <AuthModal
+        open={authOpen}
+        initialTab={authTab}
+        onClose={() => setAuthOpen(false)}
+      />
 
       <Outlet />
     </Layout>

@@ -1,117 +1,97 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
-// import { useAdmin } from '../Hooks/useAdmin';//
-
+import React, { useContext, useMemo, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Button, Drawer, Layout, Space, Tag, Typography } from 'antd';
+import { MenuOutlined, LogoutOutlined, ShopOutlined } from '@ant-design/icons';
 import { AuthContext } from '../../context/AuthProvider';
 
-import React, { useContext } from 'react'
-// import { useNavigate } from "react-router-dom";
+const { Header } = Layout;
+const { Text } = Typography;
+
 const AdminHed = () => {
-  const {admin}=useContext(AuthContext)
-  const navigate=useNavigate()
-    // const {logout}=useAdmin()
-    // const [showDropdown, setShowDropdown] = useState(false);
-    
-    const logout1=()=>{
-navigate('/admin')
-       localStorage.removeItem('adminJWT')
-       window.location.reload()
+  const { admin } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-      }
-      const togglebutton=()=>{
+  const logout1 = () => {
+    navigate('/admin');
+    localStorage.removeItem('adminJWT');
+    window.location.reload();
+  };
 
-    
-        const flexCont = document.querySelector('.flex-cont');
-        if (flexCont.style.display === 'none' || flexCont.style.display === '') {
-          flexCont.style.display = 'block';
-        } else {
-          flexCont.style.display = 'none';
-        }
-    
-     }
+  const navItems = useMemo(() => [
+    { label: 'Dashboard', to: '/admindash' },
+    { label: 'Orders', to: '/adminorders' },
+    { label: 'Add Product', to: '/addproduct' },
+    { label: 'Products', to: '/adminproducts' },
+    { label: 'Add Admin', to: '/addadmin' },
+    { label: 'Contacts', to: '/admincontacts' }
+  ], []);
 
-//   return (
-//     <>
-//     <ul className="admin-nav">
-      
-//         <div className="flex10 admin1"><li>
-//             <Link className=" adminLink" to='/admindash'>Home</Link>
-//             {admin&&   <Link className=" adminLink" to='/adminorders'>Orders</Link>}
-//        {admin&&  <Link className=" adminLink" to='/addproduct'>Add Product</Link>}
-//        {admin&& <Link className=" adminLink" to='/adminproducts'> Products</Link>}
-//        {!admin&& <Link className=" adminLink" to='/admin'> Login</Link>}
+  const isActive = (path) => location.pathname === path || location.pathname.startsWith(`${path}/`);
 
+  return (
+    <>
+      <Header style={{ position: 'sticky', top: 0, zIndex: 10, height: 'auto', padding: '16px 20px', background: 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)', borderBottom: '1px solid #e2e8f0', boxShadow: '0 10px 28px rgba(15, 23, 42, 0.04)' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+          <Space align="center" size={12}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #111827 0%, #2563eb 100%)', display: 'grid', placeItems: 'center', color: '#fff' }}>
+              <ShopOutlined />
+            </div>
+            <div>
+              <Text style={{ color: '#64748b', display: 'block', fontSize: '12px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                Admin panel
+              </Text>
+              <Text style={{ color: '#0f172a', fontSize: '16px', fontWeight: 700 }}>Gohil Store</Text>
+            </div>
+          </Space>
 
-//         </li></div>
-//         <div className="flex20 admin2">  <li>
-//        {admin&& <button className=" adminlogout" onClick={logout1}>logout</button>} 
+          <div className="admin-desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            {admin ? navItems.map((item) => (
+              <Button
+                key={item.to}
+                type={isActive(item.to) ? 'primary' : 'text'}
+                onClick={() => navigate(item.to)}
+                style={{ borderRadius: '999px', background: isActive(item.to) ? '#111827' : 'transparent', color: isActive(item.to) ? '#fff' : '#334155' }}
+              >
+                {item.label}
+              </Button>
+            )) : null}
+          </div>
 
-//         </li></div>
-      
-//     </ul>
-//     <Outlet/>
-//     </>
-//   )
-// }
-// const toggleDropdown = () => {
-//   setShowDropdown(!showDropdown);
-//   console.log(showDropdown)
-// };
+          <Space>
+            {!admin ? (
+              <Button type="primary" onClick={() => navigate('/admin')} style={{ background: '#111827', color: '#fff', borderColor: '#111827', borderRadius: '999px' }}>
+                Login
+              </Button>
+            ) : (
+              <>
+                <Tag color="blue" style={{ borderRadius: '999px', margin: 0, paddingInline: '10px' }}>Online</Tag>
+                <Button danger icon={<LogoutOutlined />} onClick={logout1} style={{ borderRadius: '999px' }}>
+                  Logout
+                </Button>
+              </>
+            )}
+            <Button type="text" className="admin-mobile-toggle" icon={<MenuOutlined style={{ color: '#0f172a' }} />} onClick={() => setDrawerOpen(true)} />
+          </Space>
+        </div>
+      </Header>
 
-return (
-  <>
-    <div></div>
-    {/* <ul className={admin?('nav'):('nav-txt-center')}  > */}
-    <ul className="nav-txt-center">
-      <div className="logo">
-        <i>{process.env.TEST}</i>
-        <i className='hamburger' onClick={togglebutton} > &#9776;</i>
-      </div>
-     <div className="flex-cont">
-      <div className='flex1ad'>
-        {/* <li className='lit'>
-          <Link className='Link' to='/admindash'>Home</Link>
-        </li> */}
-        {  admin&&   <li className='lit'>
-          <Link className='Link' to='/admindash'>Home</Link>
-        </li>}
-      {  admin&&   <li className='lit'>
-          <Link className='Link' to='/adminorders'>Orders</Link>
-        </li>}
-       { admin&& <li className='lit'>
-          <Link className='Link' to='/addproduct'>AddPro</Link>
-        </li>}
-        { admin&&<li className='lit'>
-          <Link className='Link' to='/adminproducts'> Products</Link>
-        </li>}
-        { admin&&<li className='lit'>
-          <Link className='Link' to='/addadmin'>nadmin</Link>
-        </li>}
-        { admin&&<li className='lit'>
-          <Link className='Link' to='/admincontacts'>contact</Link>
-        </li>}
-        { !admin&& <li className='lit'>
-          <Link className='Link' to='/admin'> Login</Link>
-        </li>}
-      </div>
-      <div className='flex2'>
-        
-        {admin && (
-          
-            
-            <button onClick={logout1} className=' adminlogout'>
-              Logout
-            </button>
-          
-        )}
-        
-      </div>
-      </div>
-    
-    </ul>
-    <Outlet />
-  </>
-);
-}
+      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} placement="right" title="Admin menu">
+        <Space direction="vertical" style={{ width: '100%' }}>
+          {navItems.map((item) => (
+            <Button key={item.to} block onClick={() => { navigate(item.to); setDrawerOpen(false); }}>
+              {item.label}
+            </Button>
+          ))}
+          {admin ? <Button block danger icon={<LogoutOutlined />} onClick={logout1}>Logout</Button> : null}
+        </Space>
+      </Drawer>
+
+      <Outlet />
+    </>
+  );
+};
 
 export default AdminHed;
 

@@ -16,23 +16,22 @@ export const adminReducer = (state, action) => {
                 ...state, allusers: action.payload
             }
         case 'UPDATE_ORDER_STATUS':
-            // Find the index of the order in the state array
-            const orderIndex = state.allorders.findIndex(order => order.order_id === action.payload.orderId);
+            const normalizedOrderId = String(action.payload.orderId);
+            const orderIndex = state.allorders.findIndex(order => String(order.order_id || order.id) === normalizedOrderId);
             if (orderIndex === -1) {
-                return state; // Order not found in state, return original state
+                return state;
             }
-            // Create a new copy of the order object with the updated status
+            const prevStatus = state.allorders[orderIndex].order_status || state.allorders[orderIndex].orderStatus || 'Pending';
             const updatedOrder = {
                 ...state.allorders[orderIndex],
-                order_status: action.payload.status
+                order_status: action.payload.status || prevStatus,
+                orderStatus: action.payload.status || prevStatus
             };
-            // Create a new copy of the state array with the updated order object
             const updatedOrders = [
                 ...state.allorders.slice(0, orderIndex),
                 updatedOrder,
                 ...state.allorders.slice(orderIndex + 1)
             ];
-            // Return a new state object with the updated orders array
             return { ...state, allorders: updatedOrders };
         case 'TOTAL_USER':
             return {
@@ -44,8 +43,7 @@ export const adminReducer = (state, action) => {
             }
         case 'DELETE_ORDER':
             const deletedOrderId = action.payload;
-            // Filter out the deleted order from the allorders array
-            const updatedOrders1 = state.allorders.filter(order => order.id !== deletedOrderId);
+            const updatedOrders1 = state.allorders.filter(order => String(order.order_id || order.id) !== String(deletedOrderId));
             return { ...state, allorders: updatedOrders1 };
         case 'DELETE_USER':
             const deletedUserId = action.payload;
