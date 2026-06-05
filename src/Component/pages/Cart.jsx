@@ -24,6 +24,7 @@ const Cart = () => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [addressModalOpen, setAddressModalOpen] = useState(false);
   const [addressModalView, setAddressModalView] = useState('list');
+  const [editingAddressId, setEditingAddressId] = useState(null);
   const [savingAddress, setSavingAddress] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState('bag');
@@ -36,6 +37,10 @@ const Cart = () => {
   const total = subtotal + shipping;
   const addresses = useMemo(() => profile?.addresses || [], [profile?.addresses]);
   const selectedAddress = useMemo(() => {
+    if (addresses.length === 0) {
+      return null;
+    }
+
     const bySelection = addresses.find((address) => String(address._id) === String(selectedAddressId));
     const byDefault = addresses.find((address) => String(address._id) === String(profile?.defaultAddressId));
     const bySavedShipping = hasAddressDetails(shippingdata) ? shippingdata : null;
@@ -43,8 +48,40 @@ const Cart = () => {
   }, [addresses, profile?.defaultAddressId, selectedAddressId, shippingdata]);
 
   const activeStep = checkoutStep === 'payment' ? 2 : checkoutStep === 'address' ? 1 : 0;
-
   const authToken = user?.token || null;
+
+  const getAddressFormValues = (address = {}) => ({
+    name: address.name || profile?.name || user?.name || '',
+    mobile: address.mobile || profile?.mobile || user?.mobile || '',
+    pincode: address.pincode || '',
+    landmark: address.landmark || '',
+    street: address.street || '',
+    area: address.area || '',
+    city: address.city || '',
+    state: address.state || ''
+  });
+
+  const refreshSelectionFromProfile = (json, fallbackAddressId = null) => {
+    const nextAddresses = json?.addresses || [];
+    const nextSelectedId = fallbackAddressId
+      || json?.defaultAddressId
+      || nextAddresses[0]?._id
+      || null;
+
+    setProfile(json);
+    setSelectedAddressId(nextSelectedId ? String(nextSelectedId) : null);
+
+    if (nextSelectedId) {
+      const nextSelectedAddress = nextAddresses.find((address) => String(address._id) === String(nextSelectedId));
+      if (nextSelectedAddress) {
+        cartDispatch({ type: 'SHIPPING_DETAIL', payload: nextSelectedAddress });
+        localStorage.setItem('shippingData', JSON.stringify(nextSelectedAddress));
+      }
+    } else {
+      cartDispatch({ type: 'SHIPPING_DETAIL', payload: {} });
+      localStorage.removeItem('shippingData');
+    }
+  };
 
   const loadProfile = useCallback(async () => {
     if (!authToken) {
@@ -127,15 +164,28 @@ const Cart = () => {
 
   const openAddressModal = () => {
     setAddressModalView('list');
+    setEditingAddressId(null);
     setAddressModalOpen(true);
   };
 
   const openAddressForm = () => {
-    addressForm.setFieldsValue({
-      name: profile?.name || user?.name || '',
-      mobile: profile?.mobile || user?.mobile || ''
-    });
+    setEditingAddressId(null);
+    addressForm.setFieldsValue(getAddressFormValues());
     setAddressModalView('form');
+    setAddressModalOpen(true);
+  };
+
+  const openEditAddress = (address) => {
+    setEditingAddressId(address._id);
+    addressForm.setFieldsValue(getAddressFormValues(address));
+    setAddressModalView('form');
+    setAddressModalOpen(true);
+  };
+
+  const closeAddressModal = () => {
+    setAddressModalOpen(false);
+    setAddressModalView('list');
+    setEditingAddressId(null);
   };
 
   const saveAddress = async (values) => {
@@ -146,8 +196,9 @@ const Cart = () => {
 
     setSavingAddress(true);
     try {
-      const response = await fetch(`${url}/api/addresses`, {
-        method: 'POST',
+      const isEditing = Boolean(editingAddressId);
+      const response = await fetch(`${url}/api/addresses${isEditing ? `/${editingAddressId}` : ''}`, {
+        method: isEditing ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${user.token}`
@@ -163,22 +214,56 @@ const Cart = () => {
       const mergedUser = { ...user, ...json };
       localStorage.setItem('user', JSON.stringify(mergedUser));
       authDispatch({ type: 'LOGIN', payload: mergedUser });
-      setProfile(json);
-
-      const latestAddress = json.addresses?.[json.addresses.length - 1];
-      if (latestAddress?._id) {
-        setSelectedAddressId(String(latestAddress._id));
-      }
+      refreshSelectionFromProfile(json, editingAddressId || json.defaultAddressId || json.addresses?.[json.addresses.length - 1]?._id || null);
 
       addressForm.resetFields();
-      setAddressModalView('list');
-      setAddressModalOpen(true);
+      closeAddressModal();
       message.success('Address saved successfully');
     } catch (error) {
       message.error(error.message || 'Unable to save address');
     } finally {
       setSavingAddress(false);
     }
+  };
+
+  const removeAddress = (address) => {
+    Modal.confirm({
+      title: 'Remove address?',
+      content: 'This address will be deleted from your account.',
+      okText: 'Remove',
+      okButtonProps: { danger: true },
+      cancelText: 'Cancel',
+      centered: true,
+      onOk: async () => {
+        try {
+          const response = await fetch(`${url}/api/addresses/${address._id}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${user.token}`
+            }
+          });
+
+          const json = await response.json();
+          if (!response.ok) {
+            throw new Error(json?.error || 'Unable to remove address');
+          }
+
+          const mergedUser = { ...user, ...json };
+          localStorage.setItem('user', JSON.stringify(mergedUser));
+          authDispatch({ type: 'LOGIN', payload: mergedUser });
+          refreshSelectionFromProfile(json, json.defaultAddressId || json.addresses?.[0]?._id || null);
+
+          if (editingAddressId && String(editingAddressId) === String(address._id)) {
+            closeAddressModal();
+          }
+
+          message.success('Address removed successfully');
+        } catch (error) {
+          message.error(error.message || 'Unable to remove address');
+        }
+      }
+    });
   };
 
   const placeOrder = async () => {
@@ -235,9 +320,33 @@ const Cart = () => {
     { title: 'Payment' }
   ];
 
+  const handlePrimaryAction = () => {
+    if (checkoutStep === 'bag') {
+      setCheckoutStep('address');
+      return;
+    }
+
+    if (checkoutStep === 'address') {
+      if (!user) {
+        openAuth();
+        return;
+      }
+
+      if (!selectedAddress) {
+        message.warning('Please select or add an address first.');
+        return;
+      }
+
+      setCheckoutStep('payment');
+      return;
+    }
+
+    placeOrder();
+  };
+
   const renderBag = () => (
     <Card bordered={false} style={{ borderRadius: '20px', border: '1px solid #ececec', boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)' }}>
-      <Space direction="vertical" size={10} style={{ width: '100%' }}>
+      <Space direction="vertical" size={16} style={{ width: '100%' }}>
         <Space align="center" style={{ justifyContent: 'space-between', width: '100%' }}>
           <Space size={10}>
             <div style={{ width: 36, height: 36, borderRadius: '12px', background: '#111', color: '#fff', display: 'grid', placeItems: 'center' }}>
@@ -251,24 +360,28 @@ const Cart = () => {
           <Tag color="green" style={{ borderRadius: '999px', margin: 0 }}>Ready</Tag>
         </Space>
 
-        <Divider style={{ margin: '8px 0 4px' }} />
+        {selectedAddress ? (
+          <Card bordered style={{ borderRadius: '16px', background: '#fff', border: '1px solid #e5e7eb' }} bodyStyle={{ padding: '14px 16px' }}>
+            <Text type="secondary" style={{ display: 'block', textTransform: 'uppercase', letterSpacing: '0.12em', fontSize: '11px', marginBottom: '6px' }}>Deliver to</Text>
+            <Text strong style={{ display: 'block', fontSize: '15px' }}>{selectedAddress.name || user?.name || 'Guest'}, {selectedAddress.pincode || ''}</Text>
+            <Text type="secondary" style={{ display: 'block', marginTop: '4px' }}>{formatAddressLine(selectedAddress)}</Text>
+          </Card>
+        ) : null}
+
+        <Divider style={{ margin: '0' }} />
 
         <div style={{ display: 'grid', gap: '14px' }}>
           {cart.map((item) => (
             <SingleCart key={item.id || item._id} item={item} />
           ))}
         </div>
-
-        <Button type="primary" size="large" block onClick={() => setCheckoutStep('address')} style={{ height: '46px', borderRadius: '12px', background: '#111', borderColor: '#111' }}>
-          Continue
-        </Button>
       </Space>
     </Card>
   );
 
   const renderAddress = () => (
     <Card bordered={false} style={{ borderRadius: '20px', border: '1px solid #ececec', boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)' }}>
-      <Space direction="vertical" size={12} style={{ width: '100%' }}>
+      <Space direction="vertical" size={14} style={{ width: '100%' }}>
         <Space align="center" style={{ justifyContent: 'space-between', width: '100%' }}>
           <Space size={10}>
             <div style={{ width: 36, height: 36, borderRadius: '12px', background: '#111', color: '#fff', display: 'grid', placeItems: 'center' }}>
@@ -276,38 +389,102 @@ const Cart = () => {
             </div>
             <div>
               <Text strong style={{ display: 'block' }}>Address</Text>
-              <Text type="secondary" style={{ fontSize: '13px' }}>Select a delivery address</Text>
+              <Text type="secondary" style={{ fontSize: '13px' }}>Select delivery address</Text>
             </div>
           </Space>
-          <Tag color="blue" style={{ borderRadius: '999px', margin: 0 }}>Step 2</Tag>
+          <Button type="primary" icon={<PlusOutlined />} onClick={openAddressModal} style={{ borderRadius: '12px', background: '#111', borderColor: '#111' }}>
+            Add new address
+          </Button>
         </Space>
 
-        {user ? (
-          <Card bordered style={{ borderRadius: '16px', background: '#fff8f8', border: '1px solid #f3d7d7' }} bodyStyle={{ padding: '14px' }}>
-            {!profileResolved || profileLoading ? (
-              <Text type="secondary">Loading address...</Text>
-            ) : selectedAddress ? (
-              <Space direction="vertical" size={4} style={{ width: '100%' }}>
-                <Text strong style={{ fontSize: '15px' }}>Deliver to: {selectedAddress.name || user?.name}, {selectedAddress.pincode || ''}</Text>
-                <Text type="secondary">{formatAddressLine(selectedAddress)}</Text>
-              </Space>
-            ) : (
-              <Space direction="vertical" size={4} style={{ width: '100%' }}>
-                <Text strong>No saved address yet</Text>
-                <Text type="secondary">Add a delivery address to continue.</Text>
-              </Space>
-            )}
-
-            <Button danger ghost onClick={openAddressModal} style={{ marginTop: '12px', borderRadius: '12px' }}>
-              Change address
-            </Button>
+        {!user ? (
+          <Alert type="warning" showIcon message="Login required" description="Please sign in to manage saved addresses and continue to payment." />
+        ) : profileLoading || !profileResolved ? (
+          <Card bordered style={{ borderRadius: '16px' }}>
+            <Text type="secondary">Loading saved addresses...</Text>
           </Card>
-        ) : (
-          <Alert type="warning" showIcon message="Login required" description="Please sign in to use saved addresses and place the order." />
-        )}
+        ) : addresses.length > 0 ? (
+          <>
+            <div>
+              <Text type="secondary" style={{ display: 'block', textTransform: 'uppercase', letterSpacing: '0.12em', fontSize: '11px', marginBottom: '10px' }}>Default address</Text>
+              <Radio.Group value={String(selectedAddressId || selectedAddress?._id || '')} onChange={(event) => setSelectedAddressId(event.target.value)} style={{ width: '100%' }}>
+                <Space direction="vertical" size={12} style={{ width: '100%' }}>
+                  {addresses.map((address) => {
+                    const addressKey = String(address._id);
+                    const isSelected = String(selectedAddressId || selectedAddress?._id || '') === addressKey;
 
-        <Card bordered style={{ borderRadius: '16px' }} bodyStyle={{ padding: '12px 14px' }}>
-          <Text strong style={{ display: 'block', marginBottom: '8px' }}>Selected items</Text>
+                    return (
+                      <Card
+                        key={addressKey}
+                        bordered
+                        onClick={() => setSelectedAddressId(addressKey)}
+                        style={{
+                          borderRadius: '16px',
+                          cursor: 'pointer',
+                          border: isSelected ? '1px solid #111' : '1px solid #ececec',
+                          boxShadow: isSelected ? '0 14px 30px rgba(17, 17, 17, 0.08)' : 'none'
+                        }}
+                      >
+                        <Space align="start" size={14} style={{ width: '100%' }}>
+                          <Radio value={addressKey} />
+                          <div style={{ flex: 1 }}>
+                            <Space align="center" size={8} wrap>
+                              <Text strong style={{ fontSize: '15px' }}>{address.name || profile?.name || user?.name}</Text>
+                              {String(address._id) === String(profile?.defaultAddressId || '') ? <Tag color="blue" style={{ borderRadius: '999px', margin: 0 }}>Default</Tag> : null}
+                            </Space>
+                            <Text type="secondary" style={{ display: 'block', marginTop: '2px' }}>{address.mobile || profile?.mobile || user?.mobile}</Text>
+                            <Text type="secondary" style={{ display: 'block', marginTop: '8px' }}>{formatAddressLine(address)}</Text>
+                            {address.landmark ? <Text type="secondary" style={{ display: 'block', marginTop: '2px' }}>Landmark: {address.landmark}</Text> : null}
+
+                            <Space size={8} wrap style={{ marginTop: '12px' }}>
+                              <Button size="small" onClick={(event) => { event.stopPropagation(); openEditAddress(address); }} style={{ borderRadius: '999px' }}>
+                                Edit
+                              </Button>
+                              <Button size="small" danger onClick={(event) => { event.stopPropagation(); removeAddress(address); }} style={{ borderRadius: '999px' }}>
+                                Remove
+                              </Button>
+                            </Space>
+                          </div>
+                        </Space>
+                      </Card>
+                    );
+                  })}
+                </Space>
+              </Radio.Group>
+            </div>
+          </>
+        ) : (
+          <Card bordered style={{ borderRadius: '16px' }}>
+            <Empty description="No saved address found" />
+          </Card>
+        )}
+      </Space>
+    </Card>
+  );
+
+  const renderPayment = () => (
+    <Card bordered={false} style={{ borderRadius: '20px', border: '1px solid #ececec', boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)' }}>
+      <Space direction="vertical" size={14} style={{ width: '100%' }}>
+        <Space align="center" style={{ justifyContent: 'space-between', width: '100%' }}>
+          <Space size={10}>
+            <div style={{ width: 36, height: 36, borderRadius: '12px', background: '#111', color: '#fff', display: 'grid', placeItems: 'center' }}>
+              <SafetyCertificateOutlined />
+            </div>
+            <div>
+              <Text strong style={{ display: 'block' }}>Payment</Text>
+              <Text type="secondary" style={{ fontSize: '13px' }}>Cash on delivery only</Text>
+            </div>
+          </Space>
+          <Tag color="purple" style={{ borderRadius: '999px', margin: 0 }}>Ready</Tag>
+        </Space>
+
+        <Card bordered style={{ borderRadius: '16px', background: '#fbfcfe' }} bodyStyle={{ padding: '14px' }}>
+          <Text strong style={{ display: 'block', marginBottom: '6px' }}>Cash on Delivery</Text>
+          <Text type="secondary">Pay when your order is delivered. No online payment options are available.</Text>
+        </Card>
+
+        <Card bordered style={{ borderRadius: '16px' }} bodyStyle={{ padding: '14px' }}>
+          <Text strong style={{ display: 'block', marginBottom: '6px' }}>Selected items</Text>
           <div style={{ display: 'grid', gap: '12px' }}>
             {cart.map((item) => (
               <div key={item.id || item._id} style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -323,51 +500,6 @@ const Cart = () => {
             ))}
           </div>
         </Card>
-
-        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-          <Button onClick={() => setCheckoutStep('bag')} style={{ borderRadius: '12px' }}>Back</Button>
-          <Button type="primary" onClick={() => setCheckoutStep('payment')} disabled={!selectedAddress && !!user} style={{ borderRadius: '12px', background: '#111', borderColor: '#111' }}>
-            Continue to payment
-          </Button>
-        </Space>
-      </Space>
-    </Card>
-  );
-
-  const renderPayment = () => (
-    <Card bordered={false} style={{ borderRadius: '20px', border: '1px solid #ececec', boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)' }}>
-      <Space direction="vertical" size={12} style={{ width: '100%' }}>
-        <Space align="center" style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Space size={10}>
-            <div style={{ width: 36, height: 36, borderRadius: '12px', background: '#111', color: '#fff', display: 'grid', placeItems: 'center' }}>
-              <SafetyCertificateOutlined />
-            </div>
-            <div>
-              <Text strong style={{ display: 'block' }}>Payment</Text>
-              <Text type="secondary" style={{ fontSize: '13px' }}>Cash on delivery only</Text>
-            </div>
-          </Space>
-          <Tag color="purple" style={{ borderRadius: '999px', margin: 0 }}>Step 3</Tag>
-        </Space>
-
-        <Card bordered style={{ borderRadius: '16px', background: '#fbfcfe' }} bodyStyle={{ padding: '14px' }}>
-          <Text strong style={{ display: 'block', marginBottom: '6px' }}>Cash on Delivery</Text>
-          <Text type="secondary">Pay when your order is delivered. No online payment options are available.</Text>
-        </Card>
-
-        {selectedAddress ? (
-          <Card bordered style={{ borderRadius: '16px' }} bodyStyle={{ padding: '14px' }}>
-            <Text strong style={{ display: 'block' }}>Deliver to: {selectedAddress.name || user?.name}, {selectedAddress.pincode || ''}</Text>
-            <Text type="secondary">{formatAddressLine(selectedAddress)}</Text>
-          </Card>
-        ) : null}
-
-        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-          <Button onClick={() => setCheckoutStep('address')} style={{ borderRadius: '12px' }}>Back</Button>
-          <Button type="primary" loading={placingOrder} disabled={!user || !selectedAddress} onClick={placeOrder} style={{ borderRadius: '12px', background: '#111', borderColor: '#111' }}>
-            Place order
-          </Button>
-        </Space>
       </Space>
     </Card>
   );
@@ -440,8 +572,8 @@ const Cart = () => {
                   <Title level={3} style={{ margin: 0 }}>₹ {formatPrice(total)}</Title>
                 </div>
 
-                <Button type="primary" block loading={placingOrder} disabled={!user || !selectedAddress} onClick={placeOrder} style={{ height: '46px', borderRadius: '12px', background: '#111', borderColor: '#111' }}>
-                  {user ? 'PLACE ORDER' : 'LOGIN TO PLACE ORDER'}
+                <Button type="primary" block loading={placingOrder} disabled={checkoutStep === 'payment' && (!user || !selectedAddress)} onClick={handlePrimaryAction} style={{ height: '46px', borderRadius: '12px', background: '#111', borderColor: '#111' }}>
+                  {checkoutStep === 'address' ? 'CONTINUE' : 'PLACE ORDER'}
                 </Button>
 
                 <div style={{ marginTop: '12px', display: 'grid', gap: '10px' }}>
@@ -462,7 +594,7 @@ const Cart = () => {
 
       <Modal
         open={addressModalOpen}
-        onCancel={() => setAddressModalOpen(false)}
+        onCancel={closeAddressModal}
         footer={null}
         width={640}
         centered
@@ -476,7 +608,7 @@ const Cart = () => {
               <Button type="text" icon={<ArrowLeftOutlined />} onClick={() => setAddressModalView('list')} style={{ paddingInline: 0 }} />
               <div>
                 <Text type="secondary" style={{ fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Address</Text>
-                <Title level={4} style={{ margin: 0 }}>Add new address</Title>
+                <Title level={4} style={{ margin: 0 }}>{editingAddressId ? 'Edit address' : 'Add new address'}</Title>
               </div>
             </Space>
 
@@ -529,9 +661,9 @@ const Cart = () => {
               </Row>
 
               <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-                <Button onClick={() => setAddressModalOpen(false)}>Cancel</Button>
+                <Button onClick={closeAddressModal}>Cancel</Button>
                 <Button type="primary" htmlType="submit" loading={savingAddress} style={{ background: '#111', borderColor: '#111' }}>
-                  Save address
+                  {editingAddressId ? 'Update address' : 'Save address'}
                 </Button>
               </Space>
             </Form>
@@ -599,10 +731,7 @@ const Cart = () => {
             )}
 
             <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: '14px' }}>
-              <Button onClick={() => setAddressModalOpen(false)}>Close</Button>
-              <Button type="primary" onClick={() => { setAddressModalOpen(false); setCheckoutStep('payment'); }} disabled={!selectedAddress && !!user} style={{ background: '#111', borderColor: '#111' }}>
-                Use selected address
-              </Button>
+              <Button onClick={closeAddressModal}>Close</Button>
             </Space>
           </div>
         )}

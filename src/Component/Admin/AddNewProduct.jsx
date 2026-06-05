@@ -812,11 +812,11 @@ const AddNewProduct = () => {
                     placeholder="Select category"
                     options={[
                       { value: '', label: 'Select a category', disabled: true },
-                      { value: 'mobiles', label: 'Kurta' },
-                      { value: 'fridges', label: 'Lehnga choli' },
-                      { value: 'ac', label: 'Kids' },
-                      { value: 'tv', label: 'Shirt' },
-                      { value: 'laptops', label: 'Saree' }
+                      { value: 'Kurta', label: 'Kurta' },
+                      { value: 'Lehnga choli', label: 'Lehnga choli' },
+                      { value: 'kids', label: 'Kids' },
+                      { value: 'shirt', label: 'Shirt' },
+                      { value: 'saree', label: 'Saree' }
                     ]}
                   />
                 </Col>

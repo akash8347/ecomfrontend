@@ -164,7 +164,7 @@ const AllProducts = () => {
     >
       <Header />
 
-      <div style={{ minHeight: '100vh', background: '#f6f4ef', paddingBottom: '56px' }}>
+      <div style={{ minHeight: '100vh', background: '#ffffff', paddingBottom: '56px' }}>
         <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '22px 20px 0' }}>
           <Row gutter={[20, 20]} align="middle" style={{ marginBottom: '18px' }}>
             <Col xs={24} lg={16}>
@@ -319,7 +319,7 @@ const AllProducts = () => {
                     style={{
                       display: 'grid',
                       gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-                      gap: '20px'
+                      gap: '40px'
                     }}
                   >
                     {visibleProducts.map((item) => (

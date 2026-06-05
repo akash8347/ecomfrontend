@@ -664,11 +664,11 @@ const UpdateProduct = () => {
               <label>Category</label>
               <select className="input1" name="category" value={formData.category} onChange={handleInputChange}>
                 <option value="">Select a category</option>
-                <option value="mobiles">Kurta</option>
-                <option value="fridges">Lehnga choli</option>
-                <option value="ac">kids</option>
-                <option value="tv">shirt</option>
-                <option value="laptops">saree</option>
+                <option value="Kurta">Kurta</option>
+                <option value="Lehnga choli">Lehnga choli</option>
+                <option value="kids">kids</option>
+                <option value="shirt">shirt</option>
+                <option value="saree">saree</option>
               </select>
 
               <label>Product Name</label>
