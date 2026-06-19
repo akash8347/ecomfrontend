@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Checkbox, ConfigProvider, Divider, Empty, Input, Pagination, Radio, Row, Col, Select, Slider, Spin, Space, Tag, Typography } from 'antd';
-import { ClearOutlined, SearchOutlined, SortAscendingOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, ClearOutlined, SearchOutlined } from '@ant-design/icons';
 import Header from './Header';
 import SingleProd from './SingleProd';
 import { formatPrice, getDiscountPercent, getDiscountedPrice, getMarketPrice } from '../../utils/pricing';
@@ -19,6 +19,7 @@ const AllProducts = () => {
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrands, setSelectedBrands] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [sortBy, setSortBy] = useState('recommended');
@@ -67,6 +68,19 @@ const AllProducts = () => {
       .map(([brand, count]) => ({ brand, count }));
   }, [allProducts]);
 
+  const categoryOptions = useMemo(() => {
+    const counts = new Map();
+
+    allProducts.forEach((product) => {
+      const category = String(product.category || 'Others').trim() || 'Others';
+      counts.set(category, (counts.get(category) || 0) + 1);
+    });
+
+    return [...counts.entries()]
+      .sort((first, second) => second[1] - first[1] || first[0].localeCompare(second[0]))
+      .map(([category, count]) => ({ category, count }));
+  }, [allProducts]);
+
   const maxPrice = useMemo(() => {
     const prices = allProducts.map((product) => getDiscountedPrice(product) || getMarketPrice(product)).filter(Boolean);
     const highest = prices.length > 0 ? Math.max(...prices) : 10000;
@@ -88,11 +102,12 @@ const AllProducts = () => {
           .some((field) => field.includes(query));
 
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(product.company);
+      const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(String(product.category || 'Others').trim() || 'Others');
       const salePrice = getDiscountedPrice(product) || getMarketPrice(product);
       const priceMatch = salePrice >= priceRange[0] && salePrice <= priceRange[1];
       const discountMatch = selectedDiscount === null || getDiscountPercent(product) >= selectedDiscount;
 
-      return searchMatch && brandMatch && priceMatch && discountMatch;
+      return searchMatch && brandMatch && categoryMatch && priceMatch && discountMatch;
     });
 
     const sorted = [...filtered];
@@ -115,7 +130,7 @@ const AllProducts = () => {
     }
 
     return sorted;
-  }, [allProducts, priceRange, searchQuery, selectedBrands, selectedDiscount, sortBy]);
+  }, [allProducts, priceRange, searchQuery, selectedBrands, selectedCategories, selectedDiscount, sortBy]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
 
@@ -132,6 +147,7 @@ const AllProducts = () => {
 
   const clearFilters = () => {
     setSelectedBrands([]);
+    setSelectedCategories([]);
     setSelectedDiscount(null);
     setPriceRange([0, maxPrice]);
     setSortBy('recommended');
@@ -148,120 +164,121 @@ const AllProducts = () => {
 
   const activeFilterCount =
     selectedBrands.length +
+    selectedCategories.length +
     (selectedDiscount === null ? 0 : 1) +
     (priceRange[0] > 0 || priceRange[1] < maxPrice ? 1 : 0) +
     (searchQuery ? 1 : 0) +
     (sortBy !== 'recommended' ? 1 : 0);
+
+  const resultLabel = searchQuery ? `Search results for “${searchQuery}”` : 'All Products';
 
   return (
     <ConfigProvider
       theme={{
         token: {
           colorPrimary: '#111111',
+          borderRadius: 12,
           fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
         }
       }}
     >
       <Header />
 
-      <div style={{ minHeight: '100vh', background: '#ffffff', paddingBottom: '56px' }}>
-        <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '22px 20px 0' }}>
-          <Row gutter={[20, 20]} align="middle" style={{ marginBottom: '18px' }}>
-            <Col xs={24} lg={16}>
+      <div className="store-page">
+        <div className="store-page__inner">
+          <div className="store-breadcrumbs">Home / Store / {resultLabel}</div>
+
+          <div className="store-title-row">
+            <div>
+              <h1>{resultLabel}</h1>
+              <p>{filteredProducts.length} items</p>
+            </div>
+
+            <div className="store-search-strip">
               <Input.Search
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
-                placeholder="Search products, brands, styles"
+                placeholder="Search products, brands and more"
                 allowClear
                 size="large"
                 onSearch={onSearch}
                 enterButton={<SearchOutlined />}
               />
-            </Col>
+            </div>
+          </div>
 
-            <Col xs={24} lg={8}>
-              <Space style={{ width: '100%', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-                <Select
-                  value={sortBy}
-                  onChange={(value) => {
-                    setSortBy(value);
-                    setCurrentPage(1);
-                  }}
-                  style={{ minWidth: 210 }}
-                  options={[
-                    { value: 'recommended', label: 'Recommended' },
-                    { value: 'newest', label: 'Newest' },
-                    { value: 'price_low', label: 'Price: Low to High' },
-                    { value: 'price_high', label: 'Price: High to Low' },
-                    { value: 'name_az', label: 'Name: A to Z' }
-                  ]}
-                />
-                <Button icon={<SortAscendingOutlined />} onClick={() => setSortBy('recommended')}>
-                  Reset
-                </Button>
-              </Space>
-            </Col>
-          </Row>
+          <div className="store-toolbar">
+            <div className="store-toolbar__left">
+              <span className="store-toolbar__label">FILTERS</span>
+              <div className="store-toolbar__chips">
+                <span className="store-chip">Brands <CaretDownOutlined /></span>
+                <span className="store-chip">Price <CaretDownOutlined /></span>
+                <span className="store-chip">Discount <CaretDownOutlined /></span>
+              </div>
+            </div>
 
-          <Row gutter={[24, 24]} align="top">
-            <Col xs={24} lg={6} xl={5}>
-              <div
-                style={{
-                  position: 'sticky',
-                  top: '92px',
-                  background: '#fff',
-                  border: '1px solid #ece7df',
-                  borderRadius: '22px',
-                  padding: '18px',
-                  boxShadow: '0 10px 30px rgba(15, 23, 42, 0.05)'
-                }}
-              >
-                <Space align="center" style={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text strong style={{ letterSpacing: '0.06em', textTransform: 'uppercase', fontSize: '12px' }}>
-                    Filters
-                  </Text>
-                  <Button type="text" icon={<ClearOutlined />} onClick={clearFilters}>
-                    Clear
-                  </Button>
-                </Space>
+            <Select
+              value={sortBy}
+              onChange={(value) => {
+                setSortBy(value);
+                setCurrentPage(1);
+              }}
+              className="store-sort"
+              options={[
+                { value: 'recommended', label: 'Sort by: Recommended' },
+                { value: 'newest', label: 'Newest' },
+                { value: 'price_low', label: 'Price: Low to High' },
+                { value: 'price_high', label: 'Price: High to Low' },
+                { value: 'name_az', label: 'Name: A to Z' }
+              ]}
+            />
+          </div>
 
-                {activeFilterCount > 0 && (
-                  <Tag color="default" style={{ marginTop: '10px', borderRadius: '999px', padding: '4px 10px' }}>
-                    {activeFilterCount} active
-                  </Tag>
-                )}
+          <Row gutter={0} className="store-layout">
+            <Col xs={24} lg={5} xl={4}>
+              <aside className="store-sidebar">
+                <div className="store-filter-group">
+                  <div className="store-filter-title">CATEGORIES</div>
+                  <Checkbox.Group
+                    value={selectedCategories}
+                    onChange={(values) => {
+                      setSelectedCategories(values);
+                      setCurrentPage(1);
+                    }}
+                    className="store-filter-list"
+                  >
+                    {categoryOptions.length > 0 ? categoryOptions.map((category) => (
+                      <Checkbox key={category.category} value={category.category} className="store-filter-item">
+                        {category.category} <span>({category.count})</span>
+                      </Checkbox>
+                    )) : <div className="store-filter-empty">No categories</div>}
+                  </Checkbox.Group>
+                </div>
 
-                <Divider style={{ margin: '16px 0' }} />
+                <Divider />
 
-                <div style={{ marginBottom: '18px' }}>
-                  <Text strong style={{ display: 'block', marginBottom: '12px' }}>Brand</Text>
+                <div className="store-filter-group">
+                  <div className="store-filter-title">BRAND</div>
                   <Checkbox.Group
                     value={selectedBrands}
                     onChange={(values) => {
                       setSelectedBrands(values);
                       setCurrentPage(1);
                     }}
-                    style={{ display: 'grid', gap: '10px', width: '100%' }}
+                    className="store-filter-list store-filter-list--brand"
                   >
-                    {brandOptions.length > 0 ? (
-                      brandOptions.map((brand) => (
-                        <Checkbox key={brand.brand} value={brand.brand} style={{ marginInlineStart: 0 }}>
-                          <Space size={8}>
-                            <span>{brand.brand}</span>
-                            <Tag color="default" style={{ margin: 0, borderRadius: '999px' }}>{brand.count}</Tag>
-                          </Space>
-                        </Checkbox>
-                      ))
-                    ) : (
-                      <Text type="secondary">No brands found</Text>
-                    )}
+                    {brandOptions.length > 0 ? brandOptions.map((brand) => (
+                      <Checkbox key={brand.brand} value={brand.brand} className="store-filter-item">
+                        {brand.brand} <span>({brand.count})</span>
+                      </Checkbox>
+                    )) : <div className="store-filter-empty">No brands</div>}
                   </Checkbox.Group>
                 </div>
 
-                <Divider style={{ margin: '16px 0' }} />
+                <Divider />
 
-                <div style={{ marginBottom: '18px' }}>
-                  <Text strong style={{ display: 'block', marginBottom: '12px' }}>Price</Text>
+                <div className="store-filter-group">
+                  <div className="store-filter-title">PRICE</div>
                   <Slider
                     range
                     min={0}
@@ -269,80 +286,79 @@ const AllProducts = () => {
                     value={priceRange}
                     onChange={setPriceRange}
                     tooltip={{ formatter: (value) => `₹ ${value}` }}
+                    className="store-slider"
                   />
-                  <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                    <Text type="secondary">₹ {formatPrice(priceRange[0])}</Text>
-                    <Text type="secondary">₹ {formatPrice(priceRange[1])}</Text>
-                  </Space>
+                  <div className="store-price-row">
+                    <span>₹ {formatPrice(priceRange[0])}</span>
+                    <span>₹ {formatPrice(priceRange[1])}</span>
+                  </div>
                 </div>
 
-                <Divider style={{ margin: '16px 0' }} />
+                <Divider />
 
-                <div>
-                  <Text strong style={{ display: 'block', marginBottom: '12px' }}>Discount</Text>
+                <div className="store-filter-group">
+                  <div className="store-filter-title">DISCOUNT</div>
                   <Radio.Group
                     value={selectedDiscount}
                     onChange={(event) => {
                       setSelectedDiscount(event.target.value);
                       setCurrentPage(1);
                     }}
-                    style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+                    className="store-radio-list"
                   >
                     <Radio value={null}>Any discount</Radio>
                     {DISCOUNT_OPTIONS.map((discount) => (
-                      <Radio key={discount} value={discount}>
-                        {discount}% and above
-                      </Radio>
+                      <Radio key={discount} value={discount}>{discount}% and above</Radio>
                     ))}
                   </Radio.Group>
                 </div>
-              </div>
+
+                <Button type="text" className="store-clear-btn" icon={<ClearOutlined />} onClick={clearFilters}>
+                  Clear all
+                </Button>
+              </aside>
             </Col>
 
-            <Col xs={24} lg={18} xl={19}>
-              {loading ? (
-                <div style={{ textAlign: 'center', padding: '120px 0' }}>
-                  <Spin size="large" tip="Loading products..." />
+            <Col xs={24} lg={19} xl={20}>
+              <section className="store-results">
+                <div className="store-results__meta">
+                  <span>{filteredProducts.length} products</span>
+                  <span>{activeFilterCount > 0 ? `${activeFilterCount} filters active` : 'Browse the catalog'}</span>
                 </div>
-              ) : filteredProducts.length === 0 ? (
-                <div style={{ background: '#fff', borderRadius: '22px', padding: '80px 20px', border: '1px solid #ece7df' }}>
-                  <Empty description={<span>No products matched the selected filters.</span>} />
-                </div>
-              ) : (
-                <>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
-                    <Text type="secondary">{filteredProducts.length} products</Text>
-                    <Text type="secondary">{searchQuery ? `Search: ${searchQuery}` : 'Browse the catalog'}</Text>
-                  </div>
 
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-                      gap: '40px'
-                    }}
-                  >
-                    {visibleProducts.map((item) => (
-                      <SingleProd key={item._id || item.id} item={item} />
-                    ))}
+                {loading ? (
+                  <div className="store-state">
+                    <Spin size="large" tip="Loading products..." />
                   </div>
-
-                  {filteredProducts.length > PAGE_SIZE && (
-                    <div style={{ marginTop: '36px', display: 'flex', justifyContent: 'center' }}>
-                      <Pagination
-                        current={currentPage}
-                        total={filteredProducts.length}
-                        pageSize={PAGE_SIZE}
-                        showSizeChanger={false}
-                        onChange={(page) => {
-                          setCurrentPage(page);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                      />
+                ) : filteredProducts.length === 0 ? (
+                  <div className="store-state">
+                    <Empty description={<span>No products matched the selected filters.</span>} />
+                  </div>
+                ) : (
+                  <>
+                    <div className="store-grid">
+                      {visibleProducts.map((item) => (
+                        <SingleProd key={item._id || item.id} item={item} />
+                      ))}
                     </div>
-                  )}
-                </>
-              )}
+
+                    {filteredProducts.length > PAGE_SIZE && (
+                      <div className="store-pagination">
+                        <Pagination
+                          current={currentPage}
+                          total={filteredProducts.length}
+                          pageSize={PAGE_SIZE}
+                          showSizeChanger={false}
+                          onChange={(page) => {
+                            setCurrentPage(page);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+              </section>
             </Col>
           </Row>
         </div>

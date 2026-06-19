@@ -1,8 +1,8 @@
 
 import React, { useState, useContext } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { Layout, Menu, Button, Badge, Drawer } from 'antd';
-import { ShoppingCartOutlined, UserOutlined, MenuOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Layout, Button, Badge, Drawer, Input } from 'antd';
+import { HeartOutlined, MenuOutlined, LogoutOutlined, SearchOutlined, ShoppingOutlined, UserOutlined } from '@ant-design/icons';
 import { cartContext } from '../../context/ContextPro';
 import { AuthContext } from '../../context/AuthProvider';
 import AuthModal from './AuthModal';
@@ -16,7 +16,9 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState('login');
+  const [searchValue, setSearchValue] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const logoutHandle = () => {
     localStorage.removeItem('user');
@@ -31,11 +33,13 @@ const Header = () => {
   };
 
   const navItems = [
-    { key: 'home', label: <Link to="/">Home</Link> },
-    { key: 'store', label: <Link to="/Store">Store</Link> },
-    ...(user ? [{ key: 'orders', label: <Link to="/orderstatus">Orders</Link> }] : []),
-    { key: 'about', label: <Link to="/aboutus">About</Link> },
-    { key: 'contact', label: <Link to="/contact">Contact</Link> }
+    { key: '/', label: <Link to="/">MEN</Link> },
+    { key: '/women', label: <Link to="/store">WOMEN</Link> },
+    { key: '/kids', label: <Link to="/store">KIDS</Link> },
+    { key: '/home', label: <Link to="/store">HOME</Link> },
+    { key: '/beauty', label: <Link to="/store">BEAUTY</Link> },
+    { key: '/genz', label: <Link to="/store">GENZ</Link> },
+    { key: '/studio', label: <Link to="/store">STUDIO <span className="header-new-pill">NEW</span></Link> }
   ];
 
   const openAuthModal = (tab = 'login') => {
@@ -43,51 +47,98 @@ const Header = () => {
     setAuthOpen(true);
   };
 
+  const handleSearchSubmit = () => {
+    navigate('/store', { state: { query: searchValue.trim() } });
+  };
+
   return (
     <Layout>
-      <AntHeader style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px #f0f1f2', zIndex: 1, width: '100%', position: 'sticky', top: 0 }}>
-        
-        <div style={{ fontSize: '24px', fontWeight: 'bold', fontStyle: 'italic', letterSpacing: '1px', color: '#1890ff' }}>
-          GOHIL'S
-        </div>
+      <AntHeader className="header-shell">
+        <div className="header-shell__inner">
+          <div className="header-brand" onClick={() => navigate('/store')} role="button" tabIndex={0}>
+            <span className="header-brand__mark">M</span>
+          </div>
 
-        {/* Desktop Menu */}
-        <div className="desktop-menu" style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-          <Menu mode="horizontal" items={navItems} style={{ borderBottom: 'none', minWidth: '400px', display: 'flex', justifyContent: 'center' }} />
-        </div>
+          <div className="header-nav">
+            {navItems.map((item) => (
+              <div key={item.key} className="header-nav__item">
+                {item.label}
+              </div>
+            ))}
+          </div>
 
-        <div className="desktop-actions" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          {!user ? (
-            <Button type="primary" icon={<UserOutlined />} onClick={() => openAuthModal('login')}>
-              Login / Signup
-            </Button>
-          ) : (
-            <Button danger icon={<LogoutOutlined />} onClick={logoutHandle}>Logout</Button>
-          )}
+          <div className="header-search">
+            <Input
+              prefix={<SearchOutlined />}
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+              onPressEnter={handleSearchSubmit}
+              placeholder="Search for products, brands and more"
+              bordered={false}
+            />
+          </div>
 
-          <Badge count={cart.length} showZero color="#1890ff">
-            <Button type="text" icon={<ShoppingCartOutlined style={{ fontSize: '20px' }} />} onClick={() => navigate('/cart')} />
-          </Badge>
-        </div>
+          <div className="header-actions">
+            <button type="button" className="header-action" onClick={() => (user ? navigate('/orderstatus') : openAuthModal('login'))}>
+              <UserOutlined />
+              <span>Profile</span>
+            </button>
 
-        <div className="mobile-menu-btn" style={{ display: 'none' }}>
-           <Button type="text" icon={<MenuOutlined style={{ fontSize: '20px' }} />} onClick={() => setMobileMenuOpen(true)} />
+            <button type="button" className="header-action header-action--soft">
+              <HeartOutlined />
+              <span>Wishlist</span>
+            </button>
+
+            <button type="button" className="header-action header-action--bag" onClick={() => navigate('/cart')}>
+              <Badge count={cart.length} size="small" color="#ff3f6c" offset={[0, 2]}>
+                <ShoppingOutlined />
+              </Badge>
+              <span>Bag</span>
+            </button>
+
+            {user ? (
+              <Button type="text" className="header-logout" icon={<LogoutOutlined />} onClick={logoutHandle} />
+            ) : null}
+          </div>
+
+          <div className="header-mobile-menu">
+            <Button type="text" icon={<MenuOutlined />} onClick={() => setMobileMenuOpen(true)} />
+          </div>
         </div>
       </AntHeader>
 
       <Drawer placement="right" onClose={() => setMobileMenuOpen(false)} open={mobileMenuOpen}>
-        <Menu mode="vertical" items={navItems} onClick={() => setMobileMenuOpen(false)} style={{ borderRight: 'none', marginBottom: '20px' }} />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {!user ? (
-            <>
-              <Button block type="primary" onClick={() => { openAuthModal('login'); setMobileMenuOpen(false); }}>Login</Button>
-              <Button block onClick={() => { openAuthModal('signup'); setMobileMenuOpen(false); }}>Signup</Button>
-              <Button block type="dashed" onClick={() => { navigate('/admin'); setMobileMenuOpen(false); }}>Admin</Button>
-            </>
-          ) : (
-            <Button block danger icon={<LogoutOutlined />} onClick={() => { logoutHandle(); setMobileMenuOpen(false); }}>Logout</Button>
-          )}
-          <Button block onClick={() => { navigate('/cart'); setMobileMenuOpen(false); }} icon={<ShoppingCartOutlined />}>Cart ({cart.length})</Button>
+        <div className="header-drawer">
+          <div className="header-drawer__search">
+            <Input
+              prefix={<SearchOutlined />}
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.target.value)}
+              onPressEnter={handleSearchSubmit}
+              placeholder="Search products"
+              bordered={false}
+            />
+          </div>
+
+          <div className="header-drawer__links">
+            {navItems.map((item) => (
+              <Link key={item.key} to={item.key === '/' ? '/' : '/store'} onClick={() => setMobileMenuOpen(false)}>
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="header-drawer__actions">
+            {!user ? (
+              <>
+                <Button block type="primary" onClick={() => { openAuthModal('login'); setMobileMenuOpen(false); }}>Login</Button>
+                <Button block onClick={() => { openAuthModal('signup'); setMobileMenuOpen(false); }}>Signup</Button>
+              </>
+            ) : (
+              <Button block danger icon={<LogoutOutlined />} onClick={() => { logoutHandle(); setMobileMenuOpen(false); }}>Logout</Button>
+            )}
+            <Button block onClick={() => { navigate('/cart'); setMobileMenuOpen(false); }} icon={<ShoppingOutlined />}>Cart ({cart.length})</Button>
+          </div>
         </div>
       </Drawer>
 

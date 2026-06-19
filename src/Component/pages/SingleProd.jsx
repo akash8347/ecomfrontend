@@ -1,7 +1,7 @@
 
-import React from "react";
-import { Link } from "react-router-dom";
-import { Typography } from "antd";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Typography } from 'antd';
 import { formatPrice, getDiscountPercent, getDiscountedPrice, getMarketPrice, getProductImageUrl, getProductKey } from '../../utils/pricing';
 
 const { Text } = Typography;
@@ -12,98 +12,51 @@ const SingleProd = ({ item }) => {
   const salePrice = getDiscountedPrice(item);
   const marketPrice = getMarketPrice(item);
   const discountPercent = getDiscountPercent(item);
-
-  const getImageUrl = (imageName) => {
-    let url = process.env.REACT_APP_BACKENDURL;
-    return `${url}${imageName}`;
-  };
+  const imageUrl = `${process.env.REACT_APP_BACKENDURL || ''}${getProductImageUrl(item)}`;
+  const hasDiscount = discountPercent > 0;
+  const brandName = item.company || 'Brand';
 
   return (
-    <div
+    <Link
+      to={`/productdetail/${productKey}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      className="store-card"
       style={{
-        width: '100%',
-        backgroundColor: '#fff',
-        borderRadius: 0,
-        overflow: 'hidden',
-        border: '1px solid #e8e8e8',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
-        boxShadow: isHovered ? '0 8px 20px rgba(0, 0, 0, 0.08)' : 'none',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-        height: '100%'
+        transform: isHovered ? 'translateY(-6px)' : 'translateY(0)',
+        boxShadow: isHovered ? '0 18px 28px rgba(15, 23, 42, 0.12)' : '0 6px 18px rgba(15, 23, 42, 0.06)'
       }}
     >
-      <Link to={`/productdetail/${productKey}`} style={{ color: 'inherit' }}>
-        <div style={{
-          width: '100%',
-          height: '280px',
-          background: '#f5f5f5',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 0,
-          overflow: 'hidden',
-          position: 'relative'
-        }}>
-          <img
-            alt={item.name}
-            src={getImageUrl(getProductImageUrl(item))}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.25s ease',
-              transform: isHovered ? 'scale(1.02)' : 'scale(1)'
-            }}
-          />
-        </div>
-      </Link>
+      <div className="store-card__image">
+        <img alt={item.name} src={imageUrl} style={{ transform: isHovered ? 'scale(1.04)' : 'scale(1)' }} />
 
-      <div style={{ padding: '10px 0 0', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-        <Link to={`/productdetail/${productKey}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-          <Text strong style={{
-            fontSize: '14px',
-            lineHeight: '1.35',
-            color: '#282c3f',
-            display: '-webkit-box',
-            WebkitBoxOrient: 'vertical',
-            WebkitLineClamp: 2,
-            overflow: 'hidden',
-            minHeight: '38px',
-            padding: '0 8px'
-          }}>
-            {item.name}
-          </Text>
+        {hasDiscount && <span className="store-card__badge store-card__badge--discount">{discountPercent}% OFF</span>}
 
-          <Text style={{
-            display: 'block',
-            fontSize: '13px',
-            fontWeight: 600,
-            color: '#535766',
-            marginTop: '2px',
-            padding: '0 8px'
-          }}>
-            {item.company || 'Brand'}
-          </Text>
-
-          <div style={{ marginTop: '4px', display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap', padding: '0 8px 8px' }}>
-            <Text strong style={{ fontSize: '14px', color: '#282c3f' }}>
-              ₹ {formatPrice(salePrice)}
-            </Text>
-            {marketPrice > salePrice && (
-              <Text delete style={{ color: '#7e818c', fontSize: '12px' }}>
-                ₹ {formatPrice(marketPrice)}
-              </Text>
-            )}
-            {discountPercent > 0 && <Text style={{ color: '#ff905a', fontSize: '12px', fontWeight: 700 }}>({discountPercent}% OFF)</Text>}
-          </div>
-        </Link>
+        <span className="store-card__rating">4.4 <span>★</span> 1.2k</span>
       </div>
-    </div>
+      <div className="store-card__body">
+        <Text className="store-card__brand">{brandName}</Text>
+        <Text className="store-card__name">{item.name}</Text>
+
+        <div className="store-card__price-row">
+          <Text strong className="store-card__price">
+            Rs. {formatPrice(salePrice)}
+          </Text>
+
+          {marketPrice > salePrice && (
+            <Text delete className="store-card__mrp">
+              Rs. {formatPrice(marketPrice)}
+            </Text>
+          )}
+
+          {hasDiscount && (
+            <Text className="store-card__saving">
+              (Rs. {formatPrice(marketPrice - salePrice)} OFF)
+            </Text>
+          )}
+        </div>
+      </div>
+    </Link>
   );
 };
 
