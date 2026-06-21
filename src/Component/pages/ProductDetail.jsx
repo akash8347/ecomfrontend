@@ -131,7 +131,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { cartContext } from '../../context/ContextPro';
 import Header from './Header';
-import { Row, Col, Typography, Button, Space, Image, Divider, Spin, Card, Descriptions, Tag } from 'antd';
+import { Typography, Button, Space, Image, Divider, Spin, Card, Tag } from 'antd';
 import { ShoppingCartOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { formatPrice, getDiscountPercent, getDiscountedPrice, getMarketPrice } from '../../utils/pricing';
 
@@ -144,7 +144,7 @@ const ProductDetail = () => {
   const [filteredProduct, setFilteredProduct] = useState([]);
   const [selectedColorImageIndex, setSelectedColorImageIndex] = useState(0);
 
-  let url = process.env.REACT_APP_BACKENDURL;
+  const url = process.env.REACT_APP_BACKENDURL || '';
 
   useEffect(() => {
     if (!loading && filteredProduct.length > 0) {
@@ -157,14 +157,36 @@ const ProductDetail = () => {
   };
 
   const handleNextImageClick = () => {
-    setSelectedColorImageIndex(prevIndex => (prevIndex + 1) % filteredProduct[0].image_urls.length);
+    const images = getImageList(filteredProduct[0] || {});
+    if (images.length === 0) {
+      return;
+    }
+
+    setSelectedColorImageIndex(prevIndex => (prevIndex + 1) % images.length);
   };
 
   const handlePrevImageClick = () => {
+    const images = getImageList(filteredProduct[0] || {});
+    if (images.length === 0) {
+      return;
+    }
+
     setSelectedColorImageIndex(prevIndex => {
       const newIndex = prevIndex - 1;
-      return newIndex < 0 ? filteredProduct[0].image_urls.length - 1 : newIndex;
+      return newIndex < 0 ? images.length - 1 : newIndex;
     });
+  };
+
+  const getImageList = (product) => {
+    if (Array.isArray(product.image_urls) && product.image_urls.length > 0) {
+      return product.image_urls;
+    }
+
+    if (product.image) {
+      return [product.image.replace(/\\/g, '/')];
+    }
+
+    return [];
   };
 
   useEffect(() => {
@@ -190,158 +212,163 @@ const ProductDetail = () => {
   }, [id1, url]);
 
   return (
-    <div style={{ background: '#f5f5f5', minHeight: '100vh', paddingBottom: '40px' }}>
+    <div className="product-detail-page">
       <Header />
       
-      <div style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 20px' }}>
+      <div className="product-detail-page__inner">
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '100px 0' }}>
+          <div className="product-detail-page__state">
             <Spin size="large" tip="Loading product details..." />
           </div>
         ) : filteredProduct.length === 0 ? (
-          <Card style={{ textAlign: 'center', padding: '50px', borderRadius: '12px' }}>
+          <Card className="product-detail-empty" bordered={false}>
             <Title level={3}>No product found</Title>
-            <Link to="/store"><Button type="primary">Back to Store</Button></Link>
+            <Text type="secondary">The item you requested is not available right now.</Text>
+            <div className="product-detail-empty__actions">
+              <Link to="/store"><Button type="primary" size="large">Back to Store</Button></Link>
+            </div>
           </Card>
         ) : (
           filteredProduct.map((product) => {
-            const isInCart = cart.some((p) => p.id === product.id);
+            const isInCart = cart.some((p) => (p._id || p.id) === (product._id || product.id));
+            const images = getImageList(product);
+            const imageCount = images.length;
+            const currentImage = images[selectedColorImageIndex] || product.image || '';
+            const salePrice = getDiscountedPrice(product);
+            const marketPrice = getMarketPrice(product);
+            const discountPercent = getDiscountPercent(product);
 
             return (
-              <Card key={product.id || product._id} bordered={false} style={{ borderRadius: '12px', overflow: 'hidden' }}>
-                <Row gutter={[40, 40]}>
-                  {/* Image Gallery Column */}
-                  <Col xs={24} md={10}>
-                    <div style={{ padding: '10px' }}>
-                      {/* Main Image */}
-                      <div style={{ 
-                        background: '#fff', 
-                        borderRadius: '12px', 
-                        padding: '20px', 
-                        textAlign: 'center', 
-                        border: '1px solid #f0f0f0',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                        marginBottom: '20px'
-                      }}>
+              <Card key={product.id || product._id} bordered={false} className="product-detail-shell">
+                <div className="product-detail-hero">
+                  <div className="product-detail-hero__gallery">
+                    <div className="product-detail-media">
+                      <div className="product-detail-media__frame">
                         <Image
-                          src={`${url}${product.image_urls && product.image_urls.length > 0 ? product.image_urls[selectedColorImageIndex] : (product.image || '')}`}
+                          src={`${url}${currentImage}`}
                           alt={product.name}
-                          style={{ maxWidth: '100%', maxHeight: '450px', objectFit: 'contain' }}
+                          preview={false}
+                          className="product-detail-media__image"
+                        />
+                        {discountPercent > 0 && (
+                          <Tag className="product-detail-media__badge" color="red">
+                            {discountPercent}% OFF
+                          </Tag>
+                        )}
+                      </div>
+                    </div>
+
+                    {imageCount > 1 && (
+                      <div className="product-detail-thumbs">
+                        <Button
+                          type="text"
+                          icon={<ArrowLeftOutlined />}
+                          onClick={handlePrevImageClick}
+                          className="product-detail-thumbs__nav"
+                        />
+
+                        <Space size="middle" className="product-detail-thumbs__list">
+                          {images.map((imgUrl, index) => (
+                            <button
+                              key={`${imgUrl}-${index}`}
+                              type="button"
+                              onClick={() => handleColorClick(index)}
+                              className={index === selectedColorImageIndex ? 'product-detail-thumb product-detail-thumb--active' : 'product-detail-thumb'}
+                            >
+                              <img
+                                src={`${url}${imgUrl}`}
+                                alt={`View ${index + 1}`}
+                                className="product-detail-thumb__image"
+                              />
+                            </button>
+                          ))}
+                        </Space>
+
+                        <Button
+                          type="text"
+                          icon={<ArrowRightOutlined />}
+                          onClick={handleNextImageClick}
+                          className="product-detail-thumbs__nav"
                         />
                       </div>
-                      
-                      {/* Thumbnail Slider */}
-                      {product.image_urls && product.image_urls.length > 1 && (
-                        <div style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'center', 
-                          gap: '15px' 
-                        }}>
-                          <Button 
-                            type="text" 
-                            icon={<ArrowLeftOutlined />} 
-                            onClick={handlePrevImageClick} 
-                            style={{ background: '#f5f5f5', borderRadius: '50%' }}
-                          />
-                          <Space size="middle" style={{ overflowX: 'auto', padding: '10px 0' }}>
-                            {product.image_urls.map((imgUrl, index) => (
-                              <div
-                                key={index}
-                                onClick={() => handleColorClick(index)}
-                                style={{
-                                  width: '70px',
-                                  height: '70px',
-                                  borderRadius: '8px',
-                                  border: index === selectedColorImageIndex ? '2px solid #1890ff' : '1px solid #e8e8e8',
-                                  padding: '4px',
-                                  cursor: 'pointer',
-                                  background: '#fff',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  transition: 'border 0.3s ease',
-                                  opacity: index === selectedColorImageIndex ? 1 : 0.7
-                                }}
-                              >
-                                <img 
-                                  src={`${url}${imgUrl}`} 
-                                  alt={`View ${index + 1}`} 
-                                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} 
-                                />
-                              </div>
-                            ))}
-                          </Space>
-                          <Button 
-                            type="text" 
-                            icon={<ArrowRightOutlined />} 
-                            onClick={handleNextImageClick} 
-                            style={{ background: '#f5f5f5', borderRadius: '50%' }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </Col>
+                    )}
+                  </div>
 
-                  {/* Product Details Column */}
-                  <Col xs={24} md={14}>
-                    <Title level={2}>{product.name}</Title>
-                    <Tag color="geekblue" style={{ marginBottom: '16px', fontSize: '14px', padding: '4px 12px' }}>
-                      {product.company}
-                    </Tag>
-                    
-                    <Space align="baseline" size={12} style={{ marginTop: '10px', flexWrap: 'wrap' }}>
-                      <Title level={1} style={{ color: '#f5222d', margin: 0 }}>₹ {formatPrice(getDiscountedPrice(product))}</Title>
-                      {getMarketPrice(product) > getDiscountedPrice(product) && (
-                        <Text delete style={{ color: '#8c8c8c', fontSize: '18px' }}>₹ {formatPrice(getMarketPrice(product))}</Text>
-                      )}
-                      {getDiscountPercent(product) > 0 && (
-                        <Tag color="red" style={{ borderRadius: '999px', margin: 0, fontWeight: 700 }}>
-                          {getDiscountPercent(product)}% OFF
+                  <div className="product-detail-hero__info">
+                    <div className="product-detail-sticky">
+                      <div className="product-detail-copy">
+                        <Tag className="product-detail-copy__brand" color="geekblue">
+                          {product.company}
                         </Tag>
-                      )}
-                    </Space>
-                    <Divider />
-                    
-                    <Title level={5}>Product Description</Title>
-                    <Paragraph style={{ fontSize: '16px', color: '#595959', lineHeight: '1.8' }}>
-                      {product.description}
-                    </Paragraph>
+                        <Title level={2} className="product-detail-copy__title">
+                          {product.name}
+                        </Title>
+                        <Text className="product-detail-copy__subtitle">
+                          Premium product detail view with quick cart actions and gallery navigation.
+                        </Text>
+                      </div>
 
-                    <Divider />
+                      <div className="product-detail-pricing">
+                        <div className="product-detail-pricing__row">
+                          <Title level={1} className="product-detail-pricing__sale">
+                            ₹ {formatPrice(salePrice)}
+                          </Title>
+                          {marketPrice > salePrice && (
+                            <Text delete className="product-detail-pricing__market">
+                              ₹ {formatPrice(marketPrice)}
+                            </Text>
+                          )}
+                        </div>
 
-                    <Space size="large" style={{ marginTop: '20px' }}>
-                      {isInCart ? (
-                        <Button 
-                          type="primary" 
-                          danger 
-                          size="large" 
-                          icon={<DeleteOutlined />}
-                          onClick={() => dispatch({ type: "DECREMENT", playload: product })}
-                          style={{ height: '50px', padding: '0 40px', fontSize: '16px' }}
-                        >
-                          Remove from Cart
-                        </Button>
-                      ) : (
-                        <Button 
-                          type="primary" 
-                          size="large" 
-                          icon={<ShoppingCartOutlined />}
-                          onClick={() => dispatch({ type: "INCREMENT", playload: product })}
-                          style={{ height: '50px', padding: '0 40px', fontSize: '16px' }}
-                        >
-                          Add to Cart
-                        </Button>
-                      )}
-                      
-                      <Link to="/store">
-                        <Button size="large" style={{ height: '50px', padding: '0 30px', fontSize: '16px' }}>
-                          Explore More
-                        </Button>
-                      </Link>
-                    </Space>
-                  </Col>
-                </Row>
+                        <div className="product-detail-pricing__chips">
+                          {discountPercent > 0 && <Tag color="red">{discountPercent}% OFF</Tag>}
+                          <Tag color="gold">Free delivery on eligible orders</Tag>
+                          <Tag color="green">Easy returns</Tag>
+                        </div>
+                      </div>
+
+                      <Divider />
+
+                      <div className="product-detail-description">
+                        <Title level={5}>Product Description</Title>
+                        <Paragraph className="product-detail-description__text">
+                          {product.description}
+                        </Paragraph>
+                      </div>
+
+                      <div className="product-detail-actions">
+                        {isInCart ? (
+                          <Button
+                            type="primary"
+                            danger
+                            size="large"
+                            icon={<DeleteOutlined />}
+                            onClick={() => dispatch({ type: 'DECREMENT', playload: product })}
+                            className="product-detail-actions__button"
+                          >
+                            Remove from Cart
+                          </Button>
+                        ) : (
+                          <Button
+                            type="primary"
+                            size="large"
+                            icon={<ShoppingCartOutlined />}
+                            onClick={() => dispatch({ type: 'INCREMENT', playload: product })}
+                            className="product-detail-actions__button"
+                          >
+                            Add to Cart
+                          </Button>
+                        )}
+
+                        <Link to="/store">
+                          <Button size="large" className="product-detail-actions__secondary">
+                            Explore More
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </Card>
             );
           })
