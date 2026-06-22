@@ -9,21 +9,13 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v3
 
-    - name: Use Node.js 16
-      uses: actions/setup-node@v2
+    - name: Use Node.js 24
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
+        node-version: '24'
       
     - name: 🔨 Build Project
       run: |
         npm install
         npm run build
-    
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./build/
         
