@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Checkbox, ConfigProvider, Divider, Empty, Input, Pagination, Radio, Row, Col, Select, Slider, Spin, Space, Tag, Typography } from 'antd';
 import { CaretDownOutlined, ClearOutlined, SearchOutlined } from '@ant-design/icons';
+import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import SingleProd from './SingleProd';
 import { formatPrice, getDiscountPercent, getDiscountedPrice, getMarketPrice } from '../../utils/pricing';
@@ -14,6 +15,7 @@ const DISCOUNT_OPTIONS = [10, 20, 30, 40, 50, 60, 70, 80, 90];
 const normalizeText = (value) => String(value || '').trim().toLowerCase();
 
 const AllProducts = () => {
+  const location = useLocation();
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState('');
@@ -50,6 +52,16 @@ const AllProducts = () => {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const initialQuery = String(location.state?.query || '').trim();
+
+    if (initialQuery) {
+      setSearchInput(initialQuery);
+      setSearchQuery(initialQuery);
+      setCurrentPage(1);
+    }
+  }, [location.state]);
 
   const brandOptions = useMemo(() => {
     const counts = new Map();
@@ -171,6 +183,11 @@ const AllProducts = () => {
     (sortBy !== 'recommended' ? 1 : 0);
 
   const resultLabel = searchQuery ? `Search results for “${searchQuery}”` : 'All Products';
+  const catalogStats = [
+    { label: 'Products', value: allProducts.length },
+    { label: 'Brands', value: brandOptions.length },
+    { label: 'Visible', value: filteredProducts.length }
+  ];
 
   return (
     <ConfigProvider
@@ -188,13 +205,26 @@ const AllProducts = () => {
         <div className="store-page__inner">
           <div className="store-breadcrumbs">Home / Store / {resultLabel}</div>
 
-          <div className="store-title-row">
-            <div>
+          <section className="store-hero">
+            <div className="store-hero__copy">
+              <span className="store-hero__eyebrow">Curated catalog</span>
               <h1>{resultLabel}</h1>
-              <p>{filteredProducts.length} items</p>
+              <p>
+                Explore a cleaner, faster catalog with richer filters, sharper price sorting, and a more intentional shopping flow.
+              </p>
+
+              <div className="store-hero__stats">
+                {catalogStats.map((stat) => (
+                  <div key={stat.label} className="store-stat-card">
+                    <strong>{stat.value}</strong>
+                    <span>{stat.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="store-search-strip">
+            <div className="store-hero__panel">
+              <div className="store-hero__panel-label">Quick search</div>
               <Input.Search
                 value={searchInput}
                 onChange={(event) => setSearchInput(event.target.value)}
@@ -204,6 +234,17 @@ const AllProducts = () => {
                 onSearch={onSearch}
                 enterButton={<SearchOutlined />}
               />
+
+              <div className="store-hero__panel-note">
+                Use filters to narrow the collection or jump straight into a search term.
+              </div>
+            </div>
+          </section>
+
+          <div className="store-title-row">
+            <div>
+              <h1>{resultLabel}</h1>
+              <p>{filteredProducts.length} items ready to browse</p>
             </div>
           </div>
 
@@ -234,9 +275,31 @@ const AllProducts = () => {
             />
           </div>
 
+          {activeFilterCount > 0 && (
+            <div className="store-active-filters">
+              <div className="store-active-filters__label">Active filters</div>
+              <Space size={[8, 10]} wrap>
+                {searchQuery && <Tag className="store-active-filters__tag">Search: {searchQuery}</Tag>}
+                {selectedBrands.map((brand) => <Tag key={brand} className="store-active-filters__tag">{brand}</Tag>)}
+                {selectedCategories.map((category) => <Tag key={category} className="store-active-filters__tag">{category}</Tag>)}
+                {selectedDiscount !== null && <Tag className="store-active-filters__tag">{selectedDiscount}% and above</Tag>}
+                {(priceRange[0] > 0 || priceRange[1] < maxPrice) && <Tag className="store-active-filters__tag">₹ {formatPrice(priceRange[0])} - ₹ {formatPrice(priceRange[1])}</Tag>}
+                {sortBy !== 'recommended' && <Tag className="store-active-filters__tag">Sort: {sortBy.replace('_', ' ')}</Tag>}
+              </Space>
+              <Button type="text" icon={<ClearOutlined />} onClick={clearFilters} className="store-active-filters__clear">
+                Reset
+              </Button>
+            </div>
+          )}
+
           <Row gutter={0} className="store-layout">
             <Col xs={24} lg={5} xl={4}>
               <aside className="store-sidebar">
+                <div className="store-sidebar__header">
+                  <span>Refine</span>
+                  <strong>{filteredProducts.length} results</strong>
+                </div>
+
                 <div className="store-filter-group">
                   <div className="store-filter-title">CATEGORIES</div>
                   <Checkbox.Group
