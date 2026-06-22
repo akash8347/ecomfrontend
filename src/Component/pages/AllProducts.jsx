@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, ConfigProvider, Divider, Empty, Input, Pagination, Radio, Row, Col, Select, Slider, Spin, Space, Tag, Typography } from 'antd';
+import { Button, Checkbox, ConfigProvider, Divider, Empty, Input, Pagination, Radio, Row, Col, Select, Slider, Spin, Space, Tag } from 'antd';
 import { CaretDownOutlined, ClearOutlined, SearchOutlined } from '@ant-design/icons';
 import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import SingleProd from './SingleProd';
 import { formatPrice, getDiscountPercent, getDiscountedPrice, getMarketPrice } from '../../utils/pricing';
 import './style.css';
-
-const { Text } = Typography;
 
 const PAGE_SIZE = 12;
 const DISCOUNT_OPTIONS = [10, 20, 30, 40, 50, 60, 70, 80, 90];

@@ -1,6 +1,6 @@
 
 import React, { useState, useContext } from 'react';
-import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Layout, Button, Badge, Drawer, Input } from 'antd';
 import { HeartOutlined, MenuOutlined, LogoutOutlined, SearchOutlined, ShoppingOutlined, UserOutlined } from '@ant-design/icons';
 import { cartContext } from '../../context/ContextPro';
@@ -18,7 +18,6 @@ const Header = () => {
   const [authTab, setAuthTab] = useState('login');
   const [searchValue, setSearchValue] = useState('');
   const navigate = useNavigate();
-  const location = useLocation();
 
   const logoutHandle = () => {
     localStorage.removeItem('user');

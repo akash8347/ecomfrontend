@@ -27,7 +27,7 @@ import OrderDetail from "./Component/Admin/OrderDetail.jsx"
 import AddAdmin from "./Component/Admin/AddAdmin.jsx"
 import AdminContact from "./Component/Admin/AdminContact.jsx"
 function App() {
-  const { user, admin } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   return (
     <>
 
