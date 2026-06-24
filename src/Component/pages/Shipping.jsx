@@ -1,6 +1,6 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import CheckoutFlow from './CheckoutFlow';
 
-const Shipping = () => <Navigate to="/address" replace />;
+const Shipping = ({ step = 'address' }) => <CheckoutFlow step={step} />;
 
 export default Shipping;

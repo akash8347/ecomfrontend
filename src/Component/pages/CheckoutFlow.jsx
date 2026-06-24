@@ -224,38 +224,16 @@ const CheckoutFlow = ({ step = 'address' }) => {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #f7f8fa 0%, #eef2f6 100%)', paddingBottom: '56px' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #f7f8fa 0%, #eef2f6 100%)', paddingBottom: '28px' }}>
       <Header />
 
-      <div style={{ maxWidth: '1360px', margin: '0 auto', padding: '24px 20px 0' }}>
-        <Card
-          bordered={false}
-          style={{
-            borderRadius: '24px',
-            marginBottom: '18px',
-            background: 'linear-gradient(135deg, #ffffff 0%, #fbfbfc 100%)',
-            boxShadow: '0 12px 30px rgba(15, 23, 42, 0.06)',
-            border: '1px solid #ebedf0'
-          }}
-        >
-          <Space direction="vertical" size={6} style={{ width: '100%' }}>
-            <Text type="secondary" style={{ letterSpacing: '0.12em', textTransform: 'uppercase', fontSize: '12px' }}>Checkout</Text>
-            <Title level={2} style={{ margin: 0, fontSize: '28px' }}>Secure your order in two steps</Title>
-            <Text type="secondary">Select an address, then complete the order with cash on delivery.</Text>
-          </Space>
-          <Divider style={{ margin: '18px 0' }} />
-          <Steps current={currentStep} items={stepItems} responsive={false} />
-        </Card>
-
-        <Row gutter={[24, 24]} align="top">
+      <div style={{ maxWidth: '1360px', margin: '0 auto', padding: '14px 16px 0' }}>
+        <Row gutter={[20, 20]} align="top">
           <Col xs={24} lg={16}>
             {step === 'payment' ? (
-              <Card bordered={false} style={{ borderRadius: '24px', boxShadow: '0 12px 28px rgba(15, 23, 42, 0.06)', border: '1px solid #ececec' }}>
-                <Space direction="vertical" size={14} style={{ width: '100%' }}>
-                  <div>
-                    <Text type="secondary" style={{ textTransform: 'uppercase', letterSpacing: '0.12em', fontSize: '12px' }}>Step 2</Text>
-                    <Title level={4} style={{ margin: '6px 0 0' }}>Payment</Title>
-                  </div>
+              <Card bordered={false} style={{ borderRadius: '22px', boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)', border: '1px solid #ececec' }} bodyStyle={{ padding: '18px' }}>
+                <Space direction="vertical" size={12} style={{ width: '100%' }}>
+                  <Steps current={currentStep} items={stepItems} responsive={false} size="small" />
 
                   {!user ? (
                     <Card bordered style={{ borderRadius: '18px', background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' }}>
@@ -315,12 +293,9 @@ const CheckoutFlow = ({ step = 'address' }) => {
                 </Space>
               </Card>
             ) : (
-              <Card bordered={false} style={{ borderRadius: '24px', boxShadow: '0 12px 28px rgba(15, 23, 42, 0.06)', border: '1px solid #ececec' }}>
-                <Space direction="vertical" size={16} style={{ width: '100%' }}>
-                  <div>
-                    <Text type="secondary" style={{ textTransform: 'uppercase', letterSpacing: '0.12em', fontSize: '12px' }}>Step 1</Text>
-                    <Title level={4} style={{ margin: '6px 0 0' }}>Select delivery address</Title>
-                  </div>
+              <Card bordered={false} style={{ borderRadius: '22px', boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)', border: '1px solid #ececec' }} bodyStyle={{ padding: '18px' }}>
+                <Space direction="vertical" size={12} style={{ width: '100%' }}>
+                  <Steps current={currentStep} items={stepItems} responsive={false} size="small" />
 
                   {!user ? (
                     <Card bordered style={{ borderRadius: '18px', background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)' }}>
@@ -397,19 +372,19 @@ const CheckoutFlow = ({ step = 'address' }) => {
             <Card
               bordered={false}
               style={{
-                borderRadius: '24px',
+                borderRadius: '22px',
                 position: 'sticky',
-                top: '88px',
+                top: '84px',
                 border: '1px solid #ececec',
                 boxShadow: '0 10px 24px rgba(15, 23, 42, 0.05)'
               }}
-              bodyStyle={{ padding: '22px' }}
+              bodyStyle={{ padding: '18px' }}
             >
-              <Title level={4} style={{ marginTop: 0, marginBottom: '8px' }}>Amount Summary</Title>
+              <Title level={4} style={{ marginTop: 0, marginBottom: '6px' }}>Amount Summary</Title>
               <Text type="secondary">All prices are shown in INR.</Text>
-              <Divider style={{ margin: '18px 0' }} />
+              <Divider style={{ margin: '14px 0' }} />
 
-              <Space direction="vertical" size={14} style={{ width: '100%' }}>
+              <Space direction="vertical" size={12} style={{ width: '100%' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Text type="secondary">Subtotal ({cart.length} items)</Text>
                   <Text strong>₹ {formatPrice(subtotal)}</Text>
@@ -424,9 +399,9 @@ const CheckoutFlow = ({ step = 'address' }) => {
                 </div>
               </Space>
 
-              <Divider style={{ margin: '18px 0' }} />
+              <Divider style={{ margin: '14px 0' }} />
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '22px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
                 <Title level={4} style={{ margin: 0 }}>Total</Title>
                 <Title level={3} style={{ margin: 0, color: '#111' }}>₹ {formatPrice(total)}</Title>
               </div>
@@ -449,7 +424,7 @@ const CheckoutFlow = ({ step = 'address' }) => {
               </div>
 
               {selectedAddress ? (
-                <Card bordered style={{ borderRadius: '16px', marginTop: '16px' }}>
+                <Card bordered style={{ borderRadius: '16px', marginTop: '12px' }}>
                   <Text type="secondary" style={{ display: 'block', marginBottom: '6px' }}>Selected address</Text>
                   <Text strong style={{ display: 'block' }}>{selectedAddress.name || profile?.name || user?.name}</Text>
                   <Text type="secondary" style={{ display: 'block' }}>{formatAddressLine(selectedAddress)}</Text>
@@ -469,10 +444,7 @@ const CheckoutFlow = ({ step = 'address' }) => {
         destroyOnClose
         title={null}
       >
-        <div style={{ marginBottom: '18px' }}>
-          <Text type="secondary" style={{ letterSpacing: '0.12em', textTransform: 'uppercase', fontSize: '11px' }}>New address</Text>
-          <Title level={3} style={{ margin: '4px 0 0' }}>Add delivery address</Title>
-        </div>
+        <div style={{ marginBottom: '10px' }} />
 
         <Form layout="vertical" form={addressForm} onFinish={saveAddress} requiredMark={false}>
           <Row gutter={16}>

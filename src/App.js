@@ -26,6 +26,7 @@ import Contact from "./Component/pages/Contact";
 import OrderDetail from "./Component/Admin/OrderDetail.jsx"
 import AddAdmin from "./Component/Admin/AddAdmin.jsx"
 import AdminContact from "./Component/Admin/AdminContact.jsx"
+import Shipping from "./Component/pages/Shipping.jsx";
 function App() {
   const { user } = useContext(AuthContext);
   return (
@@ -41,9 +42,9 @@ function App() {
           <Route path="/Cart" element={<Cart />} />
           <Route path="/login" element={user === null ? (<Login />) : (<Navigate to="/" />)} />
           <Route path="/signup" element={user === null ? (<SignUp />) : (<Navigate to="/" />)} />
-          <Route path="/address" element={<Navigate to="/cart" replace />} />
-          <Route path="/payment" element={<Navigate to="/cart" replace />} />
-          <Route path="/shipping" element={<Navigate to="/cart" replace />} />
+          <Route path="/address" element={<Shipping step="address" />} />
+          <Route path="/payment" element={<Shipping step="payment" />} />
+          <Route path="/shipping" element={<Shipping step="address" />} />
           <Route path="/final" element={<Navigate to="/cart" replace />} />
           <Route path="/orderstatus" element={<OrderStatus />} />
           <Route path="*" element={<NotFound />} />
