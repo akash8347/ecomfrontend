@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Modal, Tabs, Form, Input, Button, Alert, Typography } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { AuthContext } from '../../context/AuthProvider';
@@ -9,9 +10,11 @@ const AuthModal = ({ open, initialTab = 'login', onClose, onAuthSuccess }) => {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [loginForm] = Form.useForm();
   const [signupForm] = Form.useForm();
+  const [adminForm] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const { dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
@@ -19,8 +22,9 @@ const AuthModal = ({ open, initialTab = 'login', onClose, onAuthSuccess }) => {
       setFeedback(null);
       loginForm.resetFields();
       signupForm.resetFields();
+      adminForm.resetFields();
     }
-  }, [open, initialTab, loginForm, signupForm]);
+  }, [open, initialTab, loginForm, signupForm, adminForm]);
 
   useEffect(() => {
     if (!open) {
@@ -88,6 +92,36 @@ const AuthModal = ({ open, initialTab = 'login', onClose, onAuthSuccess }) => {
       setActiveTab('login');
     } catch (error) {
       setFeedback({ type: 'error', text: 'Signup failed. Please try again.' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleAdminLogin = async (values) => {
+    setSubmitting(true);
+    setFeedback(null);
+
+    try {
+      const response = await fetch(`${backendUrl}/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values)
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        setFeedback({ type: 'error', text: json.error || 'Unable to login right now.' });
+        return;
+      }
+
+      localStorage.setItem('adminJWT', JSON.stringify(json));
+      dispatch({ type: 'ADMIN_LOGIN', payload: json });
+      onAuthSuccess?.(json);
+      closeModal();
+      navigate('/admindash');
+    } catch (error) {
+      setFeedback({ type: 'error', text: 'Admin login failed. Please try again.' });
     } finally {
       setSubmitting(false);
     }
@@ -187,6 +221,49 @@ const AuthModal = ({ open, initialTab = 'login', onClose, onAuthSuccess }) => {
           </Button>
         </Form>
       )
+    },
+    {
+      key: 'admin',
+      label: 'Admin',
+      children: (
+        <Form
+          form={adminForm}
+          layout="vertical"
+          onFinish={handleAdminLogin}
+          requiredMark={false}
+          style={{ marginTop: '10px' }}
+        >
+          <Form.Item
+            name="email"
+            label="Admin email"
+            rules={[
+              { required: true, message: 'Enter your admin email address.' },
+              { type: 'email', message: 'Enter a valid email address.' }
+            ]}
+          >
+            <Input size="large" prefix={<MailOutlined />} placeholder="admin@example.com" autoComplete="email" />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: 'Enter your password.' }]}
+          >
+            <Input.Password size="large" prefix={<LockOutlined />} placeholder="Your password" autoComplete="current-password" />
+          </Form.Item>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            size="large"
+            loading={submitting}
+            style={{ height: '46px', borderRadius: '12px', background: '#111', borderColor: '#111', marginTop: '8px' }}
+          >
+            Admin sign in
+          </Button>
+        </Form>
+      )
     }
   ];
 
@@ -208,7 +285,7 @@ const AuthModal = ({ open, initialTab = 'login', onClose, onAuthSuccess }) => {
             Account
           </Text>
           <Title level={3} style={{ margin: '4px 0 0' }}>
-            {activeTab === 'login' ? 'Login' : 'Register'}
+            {activeTab === 'login' ? 'Login' : activeTab === 'signup' ? 'Register' : 'Admin login'}
           </Title>
         </div>
         <Button type="text" onClick={closeModal} style={{ paddingInline: 0 }}>
