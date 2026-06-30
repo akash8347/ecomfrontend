@@ -52,7 +52,7 @@ const AdminHed = () => {
               <Button
                 key={item.to}
                 type={isActive(item.to) ? 'primary' : 'text'}
-                onClick={() => navigate(item.to)}
+                onClick={() => { navigate(item.to); setDrawerOpen(false); }}
                 style={{ borderRadius: '999px', background: isActive(item.to) ? '#111827' : 'transparent', color: isActive(item.to) ? '#fff' : '#334155' }}
               >
                 {item.label}
