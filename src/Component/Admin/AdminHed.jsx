@@ -13,9 +13,10 @@ const AdminHed = () => {
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const logout1 = () => {
-    navigate('/admin');
+  const handleLogout = () => {
     localStorage.removeItem('adminJWT');
+    setDrawerOpen(false);
+    navigate('/admin');
     window.location.reload();
   };
 
@@ -67,12 +68,12 @@ const AdminHed = () => {
             ) : (
               <>
                 <Tag color="blue" style={{ borderRadius: '999px', margin: 0, paddingInline: '10px' }}>Online</Tag>
-                <Button danger icon={<LogoutOutlined />} onClick={logout1} style={{ borderRadius: '999px' }}>
+                <Button danger icon={<LogoutOutlined />} onClick={handleLogout} style={{ borderRadius: '999px' }}>
                   Logout
                 </Button>
               </>
             )}
-            <Button type="text" className="admin-mobile-toggle" icon={<MenuOutlined style={{ color: '#0f172a' }} />} onClick={() => setDrawerOpen(true)} />
+            <Button type="text" className="admin-mobile-toggle" aria-label="Open admin menu" icon={<MenuOutlined style={{ color: '#0f172a' }} />} onClick={() => setDrawerOpen(true)} />
           </Space>
         </div>
       </Header>
@@ -84,7 +85,7 @@ const AdminHed = () => {
               {item.label}
             </Button>
           ))}
-          {admin ? <Button block danger icon={<LogoutOutlined />} onClick={logout1}>Logout</Button> : null}
+          {admin ? <Button block danger icon={<LogoutOutlined />} onClick={handleLogout}>Logout</Button> : null}
         </Space>
       </Drawer>
 
